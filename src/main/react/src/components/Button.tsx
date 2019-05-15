@@ -1,4 +1,5 @@
 import * as React from 'react';
+import './Button.css';
 
 export interface Props {
     intensity: Number;
@@ -12,7 +13,6 @@ function handleClick(intensity: Number) {
 
 
 function Button({ intensity, label }: Props) {
-
     return (
       <button className={"borg-button"} onClick={() => handleClick(intensity)}>
           {label}

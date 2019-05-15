@@ -1,5 +1,6 @@
 import React, {Component} from "react";
-import Button from "../components/button";
+import Button from "../components/Button";
+import './Trial.css';
 
 type Intensity = {
     number: Number,
@@ -29,8 +30,10 @@ export class Trial extends Component<{}, {items: Scales}> {
     }
 
     private buttons(scale: Scale) {
-        return <div>{scale.description}<br/>
-                <div>{scale.intensities.map((intensity, index) => <Button key={index} intensity={intensity.number} label={intensity.label}/>)}</div>
+        return <div className={"trial"}>{scale.description}<br/>
+                <ul>{scale.intensities.map((intensity, index) =>
+                    <li key={index}><Button intensity={intensity.number} label={intensity.label}/></li>
+                )}</ul>
         </div>;
     }
 }
