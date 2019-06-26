@@ -24,11 +24,11 @@ export class Home extends Component<{}, { scales: Scales }> {
     }
 
     private static renderScaleRadio(scale: Scale) {
-        let radioName = `scale-${scale.name}`;
         let scaleName = `${scale.name}`;
+        let radioId = `scale-${scale.name}`;
         return <span>
-            <input type="radio" name={radioName} value={scaleName}/>
-            <label htmlFor={radioName}>{scaleName}</label><br/>
+            <input id={radioId}type="radio" name="scale" value={scaleName}/>
+            <label htmlFor={radioId}>{scaleName}</label><br/>
         </span>;
     }
 }
