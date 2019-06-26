@@ -1,19 +1,7 @@
 import React, {Component} from "react";
 import Button from "../components/Button";
 import './Trial.css';
-
-type Intensity = {
-    number: Number,
-    label: String
-};
-
-type Scale = {
-    name: String,
-    description: String,
-    intensities: Array<Intensity>
-}
-
-type Scales = Array<Scale>
+import {Scale, Scales} from "./Scale";
 
 export class Trial extends Component<{}, {items: Scales}> {
     componentDidMount() {

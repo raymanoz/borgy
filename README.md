@@ -25,3 +25,8 @@ Run (in dev mode)
     Use "Start Serevr" in IDEA run menu
 * start frontend, in `src/main/react`
     `yarn start`
+    
+    
+notes
+=====
+[This](https://github.com/toddlucas/react-tsx-starter) seems like a good react typescript example

@@ -1,12 +1,21 @@
 import React from 'react';
 import './App.css';
-import {Trial} from "./pages/Trial";
+import {Route, Router} from "react-router";
+import {Home} from "./pages/Home";
+import {History} from 'history';
 
-const App: React.FC = () => {
+interface AppProps {
+    history: History;
+}
+
+const App = ({history}:AppProps) => {
     return (
         <div className="App">
             <header className="App-header">
-                <Trial />
+                <Router history={history}>
+                    <Route path={"/"} exact component={Home}/>>
+                    <Route path={"/home"} exact component={Home}/>>
+                </Router>
             </header>
         </div>
     );
