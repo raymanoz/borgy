@@ -20,5 +20,14 @@
       {"number":  36.4, "label": "normal"},
       {"number":  70, "label": "super hot"}
     ]
+  },
+  {
+    "name": "high",
+    "description": "how high do you feel :)",
+    "intensities" : [
+      {"number":  1, "label": "normal"},
+      {"number":  2, "label": "a bit peeky"},
+      {"number":  3, "label": "really fuckin' high, maaaan"}
+    ]
   }
 ]

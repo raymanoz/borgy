@@ -30,3 +30,10 @@ Run (in dev mode)
 notes
 =====
 [This](https://github.com/toddlucas/react-tsx-starter) seems like a good react typescript example
+
+
+Application users
+=================
+researcher - this person will be in charge of starting a trial, ending a trial and perhaps monitoring a trial.
+subject - This is the person for who the trial is being run. They will press the buttons during the trial to show how tired (etc) that they are.
+

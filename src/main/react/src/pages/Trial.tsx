@@ -3,8 +3,13 @@ import Button from "../components/Button";
 import './Trial.css';
 import {Scale, Scales} from "./Scale";
 
-export class Trial extends Component<{}, {items: Scales}> {
+
+export class Trial extends Component<{name: string}, {items: Scales}> {
     componentDidMount() {
+        fetch(`http://localhost:9000/trial_/${this.props.name}`);
+
+        console.log(this.props.name);
+
         fetch(`http://localhost:9000/scales`)
             .then(result => result.json())
             .then(scales => {
