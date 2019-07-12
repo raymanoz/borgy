@@ -1,32 +1,41 @@
 import React, {Component} from "react";
 import Button from "../components/Button";
 import './Trial.css';
-import {Scale, Scales} from "./Scale";
+import {Scale} from "./Scale";
+import {RouteComponentProps} from "react-router";
 
+interface UrlParams {
+    name: string;
+}
 
-export class Trial extends Component<{name: string}, {items: Scales}> {
+interface Props extends RouteComponentProps<UrlParams> {
+}
+
+export class Trial extends Component<Props, { scale: Scale, trial: String }> {
     componentDidMount() {
-        fetch(`http://localhost:9000/trial_/${this.props.name}`);
-
-        console.log(this.props.name);
-
-        fetch(`http://localhost:9000/scales`)
+        const {name} = this.props.match.params;
+        this.setState({trial: name});
+        fetch(`http://localhost:9000/api/trials/${name}`)
             .then(result => result.json())
-            .then(scales => {
-                    return this.setState({items: scales})
-                }
-            )
+            .then(json => this.fetchScale(json.scale));
+    }
+
+    private fetchScale(name: String) {
+        fetch(`http://localhost:9000/api/scales/${name}`)
+            .then(result => result.json())
+            .then(json => this.setState({scale: json}))
     }
 
     render() {
-        return (this.state ? this.buttons(this.state.items[0]) : <span/>)
+        return (this.state ? this.buttons(this.state.scale) : <span/>)
     }
 
     private buttons(scale: Scale) {
-        return <div className={"trial"}>{scale.description}<br/>
-                <ul>{scale.intensities.map((intensity, index) =>
-                    <li key={index}><Button intensity={intensity.number} label={intensity.label}/></li>
-                )}</ul>
-        </div>;
+        return scale ? <div className={"trial"}>{scale.description}<br/>
+            <ul>{scale.intensities.map((intensity, index) =>
+                <li key={index}><Button trial={this.state.trial} intensity={intensity.number}
+                                        label={intensity.label}/></li>
+            )}</ul>
+        </div> : <div/>
     }
 }

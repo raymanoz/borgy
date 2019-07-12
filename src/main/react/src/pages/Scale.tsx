@@ -10,3 +10,4 @@ export type Scale = {
 }
 
 export type Scales = Array<Scale>
+export type Trials = Array<String>
