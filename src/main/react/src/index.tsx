@@ -9,4 +9,5 @@ ReactDOM.render(
     <BrowserRouter>
         <RouteMap/>
     </BrowserRouter>,
-    document.getElementById('root'));
+    document.getElementById('root')
+);

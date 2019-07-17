@@ -28,5 +28,5 @@ fun main() {
             .setPrettyPrinting()
             .create()
 
-    BorgyServer(gson).start()
+    BorgyServer(gson, Configuration()).start()
 }

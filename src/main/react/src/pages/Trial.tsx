@@ -15,13 +15,13 @@ export class Trial extends Component<Props, { scale: Scale, trial: String }> {
     componentDidMount() {
         const {name} = this.props.match.params;
         this.setState({trial: name});
-        fetch(`http://localhost:9000/api/trials/${name}`)
+        fetch(`/api/trials/${name}`)
             .then(result => result.json())
             .then(json => this.fetchScale(json.scale));
     }
 
     private fetchScale(name: String) {
-        fetch(`http://localhost:9000/api/scales/${name}`)
+        fetch(`/api/scales/${name}`)
             .then(result => result.json())
             .then(json => this.setState({scale: json}))
     }

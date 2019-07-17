@@ -1,0 +1,120 @@
+[
+  {
+    "name": "RPE",
+    "description": "Rating of perceived exertion",
+    "intensities": [
+      {
+        "number": 7,
+        "label": "Very, very light"
+      },
+      {
+        "number": 9,
+        "label": "Very light"
+      },
+      {
+        "number": 11,
+        "label": "Fairly light"
+      },
+      {
+        "number": 13,
+        "label": "Somewhat hard"
+      },
+      {
+        "number": 15,
+        "label": "Hard"
+      },
+      {
+        "number": 17,
+        "label": "Very hard"
+      },
+      {
+        "number": 19,
+        "label": "Very, very hard"
+      }
+    ]
+  },
+  {
+    "name": "Thermal comfort",
+    "description": "comfort",
+    "intensities": [
+      {
+        "number": 1,
+        "label": "Comfortable"
+      },
+      {
+        "number": 2,
+        "label": "Slightly comfortable"
+      },
+      {
+        "number": 3,
+        "label": "Uncomfortable"
+      },
+      {
+        "number": 4,
+        "label": "Very uncomfortable"
+      },
+      {
+        "number": 5,
+        "label": "Extremely uncomfortable"
+      }
+    ]
+  },
+  {
+    "name": "Thermal sensation",
+    "description": "sensation",
+    "intensities": [
+      {
+        "number": 1,
+        "label": "Unbearably cold"
+      },
+      {
+        "number": 2,
+        "label": "Extremely cold"
+      },
+      {
+        "number": 3,
+        "label": "Very cold"
+      },
+      {
+        "number": 4,
+        "label": "Cold"
+      },
+      {
+        "number": 5,
+        "label": "Cool"
+      },
+      {
+        "number": 6,
+        "label": "Slightly cool"
+      },
+      {
+        "number": 7,
+        "label": "Neutral"
+      },
+      {
+        "number": 8,
+        "label": "Slightly warm"
+      },
+      {
+        "number": 9,
+        "label": "Warm"
+      },
+      {
+        "number": 10,
+        "label": "Hot"
+      },
+      {
+        "number": 11,
+        "label": "Very hot"
+      },
+      {
+        "number": 12,
+        "label": "Extremely hot"
+      },
+      {
+        "number": 13,
+        "label": "Unbearably hot"
+      }
+    ]
+  }
+]

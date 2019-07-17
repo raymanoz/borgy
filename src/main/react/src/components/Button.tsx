@@ -9,7 +9,7 @@ export interface Props {
 
 
 function handleClick(trial: String, intensity: Number) {
-    fetch(`http://localhost:9000/api/trials/${trial}`, {method: "PATCH", body: `{ "intensity": ${intensity} }`})
+    fetch(`/api/trials/${trial}`, {method: "PATCH", body: `{ "intensity": ${intensity} }`})
 }
 
 

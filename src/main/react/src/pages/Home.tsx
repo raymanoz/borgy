@@ -31,7 +31,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     componentDidMount() {
-        fetch(`http://localhost:9000/api/scales`)
+        fetch(`/api/scales`)
             .then(result => result.json())
             .then(s => this.setState({scales: s}));
 
@@ -64,13 +64,13 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     private refreshTrials() {
-        fetch(`http://localhost:9000/api/trials`)
+        fetch(`/api/trials`)
             .then(result => result.json())
             .then(t => this.setState({trials: t}))
     }
 
     private startTrial() {
-        fetch(`http://localhost:9000/api/trials`, {method: "POST", body: this.startTrialJsonFromState()})
+        fetch(`/api/trials`, {method: "POST", body: this.startTrialJsonFromState()})
         // TODO : Handle failure response
             .then(result => result.json())
             .then(json => responseDecoder
@@ -109,7 +109,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     private completeTrial(trial: String) {
-        fetch(`http://localhost:9000/api/trials/${trial}`, {method: "DELETE", credentials: 'same-origin'})
+        fetch(`/api/trials/${trial}`, {method: "DELETE", credentials: 'same-origin'})
             .then(_ => this.refreshTrials())
     }
 
