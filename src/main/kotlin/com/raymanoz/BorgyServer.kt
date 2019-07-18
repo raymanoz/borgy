@@ -107,8 +107,8 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
     }
 
     private fun scale(): HttpHandler = { req ->
-        val data = load(config.scalesFile())
-                .map { f -> f.readText() }
+        val data = loadStream(config.scalesFile())
+                .map { f -> f.bufferedReader().readText() }
                 .map { json -> gson.fromJson(json, Array<Scale>::class.java) }
                 .orElse(emptyArray()).toList()
 

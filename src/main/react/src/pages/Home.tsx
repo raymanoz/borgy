@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Scale, Scales, Trials} from "./Scale";
 import {JsonDecoder} from "ts.data.json";
 import {History} from 'history';
+import {NavLink} from "react-router-dom";
 
 interface StartTrialResponse {
     url: string;
@@ -103,8 +104,8 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     private renderActiveTrial(trial: String, idx: number) {
-        return <li key={idx}><a href={"/trial/" + trial}>{trial}</a>
-            <button onClick={_ => this.completeTrial(trial)}>Complete</button>
+        return <li key={idx}>
+            <NavLink to={"/trial/" + trial}>{trial}</NavLink><button onClick={_ => this.completeTrial(trial)}>Complete</button>
         </li>
     }
 
