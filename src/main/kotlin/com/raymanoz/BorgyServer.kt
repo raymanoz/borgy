@@ -123,8 +123,8 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
 
     private fun scales(): HttpHandler {
         return { _ ->
-            val data = load(config.scalesFile())
-                    .map { f -> f.readText() }
+            val data = loadStream(config.scalesFile())
+                    .map { f -> f.bufferedReader().readText() }
                     .orElse("[]")
             Response(Status.OK).body(data)
         }
@@ -133,6 +133,9 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
     private fun load(file: File): Optional<File> = if (file.exists()) Optional.of(file) else Optional.empty()
 
     private fun load(filename: String): Optional<File> = load(File(filename))
+
+    private fun loadStream(name: String): Optional<InputStream> =
+            Optional.ofNullable((BorgyServer::class.java).getResourceAsStream(name))
 
     private fun write(data: Trial, file: File) = file.writeText(gson.toJson(data, Trial::class.java))
 
@@ -145,4 +148,5 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
         config.completeTrials().mkdirs()
         return config.completeTrials()
     }
+
 }

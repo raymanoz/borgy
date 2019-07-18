@@ -32,7 +32,17 @@ compileTestKotlin {
 
 def webAppFiles = fileTree(dir: project.file('src/main/react/build')).include('**/*')
 
-jar() {
+task uiClean(type: Exec) {
+    workingDir 'src/main/react'
+    commandLine(['yarn', 'clean'])
+}
+
+task uiBuild(type: Exec) {
+    workingDir 'src/main/react'
+    commandLine(['yarn', 'build'])
+}
+
+jar {
     manifest {
         attributes 'Main-Class': 'com.raymanoz.MainKt'
     }
@@ -45,3 +55,6 @@ jar() {
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
+jar.dependsOn(['uiBuild'])
+
+clean.dependsOn(['uiClean'])
