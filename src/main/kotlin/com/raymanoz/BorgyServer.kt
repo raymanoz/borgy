@@ -1,6 +1,10 @@
 package com.raymanoz
 
-import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.TypeAdapter
+import com.google.gson.stream.JsonReader
+import com.google.gson.stream.JsonToken
+import com.google.gson.stream.JsonWriter
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.DELETE
@@ -31,31 +35,48 @@ import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Optional
 
-class BorgyServer(private val gson: Gson, private val config: Configuration) {
-    fun start() {
-        val httpHandler = routes(
-            "/api" bind routes(
-                "/ping" bind GET to ping(),
-                "/scales" bind routes(
-                    "/{name}" bind GET to scale(),
-                    "/" bind GET to scales()
-                ),
-                "/trials" bind routes(
-                    "/{name}" bind routes(
-                        GET to trial(),
-                        DELETE to endTrial(),
-                        PATCH to addTrialButtonClick()
-                    ),
-                    routes(
-                        GET to trials(),
-                        POST to newTrial()
-                    )
-                )
-            ),
-            static(config.client())
-        )
+private class UtcDateTypeAdapter : TypeAdapter<Instant>() {
+    override fun write(out: JsonWriter, value: Instant) {
+        out.value(value.toString())
+    }
 
-        ServerFilters.Cors(UnsafeGlobalPermissive).then(httpHandler).asServer(Jetty(9000)).start()
+    override fun read(json: JsonReader): Instant? =
+        if (json.peek() == JsonToken.NULL) {
+            json.nextNull()
+            null
+        } else Instant.parse(json.nextString())
+}
+
+class BorgyServer(private val config: Configuration) {
+    private val gson = GsonBuilder()
+        .registerTypeAdapter(Instant::class.java, UtcDateTypeAdapter())
+        .setPrettyPrinting()
+        .create()
+
+    private val app = ServerFilters.Cors(UnsafeGlobalPermissive).then(routes(
+        "/api" bind routes(
+            "/ping" bind GET to ping(),
+            "/scales" bind routes(
+                "/{name}" bind GET to scale(),
+                "/" bind GET to scales()
+            ),
+            "/trials" bind routes(
+                "/{name}" bind routes(
+                    GET to trial(),
+                    DELETE to endTrial(),
+                    PATCH to addTrialButtonClick()
+                ),
+                routes(
+                    GET to trials(),
+                    POST to newTrial()
+                )
+            )
+        ),
+        static(config.client())
+    ))
+
+    fun start() {
+        app.asServer(Jetty(config.port())).start()
     }
 
     private fun ping(): HttpHandler = { Response(OK).body("pong") }
@@ -74,7 +95,7 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
     }
 
     private fun trial(): HttpHandler = { req: Request ->
-        val data = load(trialFile(req.path("name")))
+        val data = trialFile(req.path("name")).load()
             .map { f -> InputStreamReader(FileInputStream(f)) }
             .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
             .orElseGet { Trial("", "", emptyList()) } // TODO: handle this failure case
@@ -102,7 +123,7 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
         val trialFile = trialFile(name)
         trialFile.createNewFile()
 
-        write(Trial(name, newTrial.scale, emptyList()), trialFile)
+        trialFile.write(Trial(name, newTrial.scale, emptyList()))
 
         Response(OK).body("""{ "url" : "/trial/$name" } """)
     }
@@ -113,14 +134,14 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
 
         val trialFile = trialFile(req.path("name"))
 
-        val data = load(trialFile)
+        val data = trialFile.load()
             .map { f -> InputStreamReader(FileInputStream(f)) }
             .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
             .orElseGet { Trial("name", "scale", emptyList()) }
 
         val newData = data.copy(entries = data.entries + entry)
 
-        write(newData, trialFile)
+        trialFile.write(newData)
 
         Response(OK)
     }
@@ -140,32 +161,22 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
         }
     }
 
-    private fun scales(): HttpHandler {
-        return { _ ->
-            val data = loadStream(config.scalesFile())
-                .map { f -> f.bufferedReader().readText() }
-                .orElse("[]")
-            Response(OK).body(data)
-        }
+    private fun scales(): HttpHandler = { _ ->
+        val data = loadStream(config.scalesFile())
+            .map { f -> f.bufferedReader().readText() }
+            .orElse("[]")
+        Response(OK).body(data)
     }
 
-    private fun load(file: File): Optional<File> = if (file.exists()) Optional.of(file) else Optional.empty()
-
-    private fun load(filename: String): Optional<File> = load(File(filename))
+    private fun File.load(): Optional<File> = if (exists()) Optional.of(this) else Optional.empty()
 
     private fun loadStream(name: String): Optional<InputStream> =
         Optional.ofNullable((BorgyServer::class.java).getResourceAsStream(name))
 
-    private fun write(data: Trial, file: File) = file.writeText(gson.toJson(data, Trial::class.java))
+    private fun File.write(data: Trial) = writeText(gson.toJson(data, Trial::class.java))
 
-    private fun activeTrials(): File {
-        config.activeTrials().mkdirs()
-        return config.activeTrials()
-    }
+    private fun activeTrials() = config.activeTrials().apply { mkdirs() }
 
-    private fun completeTrials(): File {
-        config.completeTrials().mkdirs()
-        return config.completeTrials()
-    }
+    private fun completeTrials() = config.completeTrials().apply { mkdirs() }
 
 }

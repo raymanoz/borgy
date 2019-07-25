@@ -8,4 +8,5 @@ class Configuration {
     fun activeTrials(): File = File(System.getProperty("trials.active") ?: "trials/active")
     fun completeTrials(): File = File(System.getProperty("trials.complete") ?: "trials/complete")
     fun client(): ResourceLoader = ResourceLoader.Classpath("/client")
+    fun port(): Int = 9000
 }
