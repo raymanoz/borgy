@@ -1,5 +1,7 @@
 package com.raymanoz
 
+import org.http4k.cloudnative.env.Environment
+
 fun main() {
-    BorgyServer(Configuration()).start()
+    BorgyServer(Environment.ENV).start()
 }

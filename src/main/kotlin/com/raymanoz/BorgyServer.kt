@@ -5,6 +5,7 @@ import com.google.gson.TypeAdapter
 import com.google.gson.stream.JsonReader
 import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
+import org.http4k.cloudnative.env.Environment
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.DELETE
@@ -47,7 +48,7 @@ private class UtcDateTypeAdapter : TypeAdapter<Instant>() {
         } else Instant.parse(json.nextString())
 }
 
-class BorgyServer(private val config: Configuration) {
+class BorgyServer(private val env: Environment) {
     private val gson = GsonBuilder()
         .registerTypeAdapter(Instant::class.java, UtcDateTypeAdapter())
         .setPrettyPrinting()
@@ -72,11 +73,11 @@ class BorgyServer(private val config: Configuration) {
                 )
             )
         ),
-        static(config.client())
+        static()
     ))
 
     fun start() {
-        app.asServer(Jetty(config.port())).start()
+        app.asServer(Jetty(Config.port(env))).start()
     }
 
     private fun ping(): HttpHandler = { Response(OK).body("pong") }
@@ -147,7 +148,7 @@ class BorgyServer(private val config: Configuration) {
     }
 
     private fun scale(): HttpHandler = { req ->
-        val data = loadStream(config.scalesFile())
+        val data = loadStream(Config.scalesFile(env))
             .map { f -> f.bufferedReader().readText() }
             .map { json -> gson.fromJson(json, Array<Scale>::class.java) }
             .orElse(emptyArray()).toList()
@@ -162,7 +163,7 @@ class BorgyServer(private val config: Configuration) {
     }
 
     private fun scales(): HttpHandler = { _ ->
-        val data = loadStream(config.scalesFile())
+        val data = loadStream(Config.scalesFile(env))
             .map { f -> f.bufferedReader().readText() }
             .orElse("[]")
         Response(OK).body(data)
@@ -175,8 +176,8 @@ class BorgyServer(private val config: Configuration) {
 
     private fun File.write(data: Trial) = writeText(gson.toJson(data, Trial::class.java))
 
-    private fun activeTrials() = config.activeTrials().apply { mkdirs() }
+    private fun activeTrials() = Config.activeTrials(env).apply { mkdirs() }
 
-    private fun completeTrials() = config.completeTrials().apply { mkdirs() }
+    private fun completeTrials() = Config.completeTrials(env).apply { mkdirs() }
 
 }

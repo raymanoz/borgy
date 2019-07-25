@@ -13,6 +13,7 @@ dependencies {
 
     compile 'org.http4k:http4k-core:3.163.0'
     compile 'org.http4k:http4k-server-jetty:3.163.0'
+    compile 'org.http4k:http4k-cloudnative:3.163.0'
     compile 'org.http4k:http4k-client-okhttp:3.163.0'
     compile 'org.http4k:http4k-format-gson:3.163.0'
 }
