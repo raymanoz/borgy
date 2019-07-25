@@ -1,8 +1,18 @@
 package com.raymanoz
 
 import com.google.gson.Gson
-import org.http4k.core.*
-import org.http4k.filter.CorsPolicy
+import org.http4k.core.Body
+import org.http4k.core.HttpHandler
+import org.http4k.core.Method.DELETE
+import org.http4k.core.Method.GET
+import org.http4k.core.Method.PATCH
+import org.http4k.core.Method.POST
+import org.http4k.core.Request
+import org.http4k.core.Response
+import org.http4k.core.Status
+import org.http4k.core.Status.Companion.OK
+import org.http4k.core.then
+import org.http4k.filter.CorsPolicy.Companion.UnsafeGlobalPermissive
 import org.http4k.filter.ServerFilters
 import org.http4k.format.Gson.auto
 import org.http4k.routing.bind
@@ -19,64 +29,73 @@ import java.nio.file.Files
 import java.time.Instant
 import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.*
-
+import java.util.Optional
 
 class BorgyServer(private val gson: Gson, private val config: Configuration) {
     fun start() {
         val httpHandler = routes(
-                "/api/ping" bind Method.GET to ping(),
-                "/api/scales" bind Method.GET to scales(),
-                "/api/scales/{name}" bind Method.GET to scale(),
-                "/api/trials" bind Method.POST to newTrial(),
-                "/api/trials/{name}" bind Method.GET to trial(),
-                "/api/trials/{name}" bind Method.DELETE to endTrial(),
-                "/api/trials" bind Method.GET to trials(),
-                "/api/trials/{name}" bind Method.PATCH to addTrialButtonClick(),
-                "/" bind static(config.client())
+            "/api" bind routes(
+                "/ping" bind GET to ping(),
+                "/scales" bind routes(
+                    "/{name}" bind GET to scale(),
+                    "/" bind GET to scales()
+                ),
+                "/trials" bind routes(
+                    "/{name}" bind routes(
+                        GET to trial(),
+                        DELETE to endTrial(),
+                        PATCH to addTrialButtonClick()
+                    ),
+                    routes(
+                        GET to trials(),
+                        POST to newTrial()
+                    )
+                )
+            ),
+            static(config.client())
         )
 
-        ServerFilters.Cors(CorsPolicy.UnsafeGlobalPermissive).then(httpHandler).asServer(Jetty(9000)).start()
+        ServerFilters.Cors(UnsafeGlobalPermissive).then(httpHandler).asServer(Jetty(9000)).start()
     }
 
-    private fun ping(): HttpHandler = { Response(Status.OK).body("pong") }
+    private fun ping(): HttpHandler = { Response(OK).body("pong") }
 
     private fun endTrial(): HttpHandler = { req ->
         completeTrials().mkdirs()
         val name = req.path("name")
         Files.move(trialFile(name).toPath(), completeFile(name).toPath())
-        Response(Status.OK)
+        Response(OK)
     }
 
     private fun trials(): HttpHandler = { _ ->
         val trials = loadTrials().map { t -> t.name }
         val trialsList = gson.toJson(trials)
-        Response(Status.OK).body(trialsList)
+        Response(OK).body(trialsList)
     }
 
     private fun trial(): HttpHandler = { req: Request ->
         val data = load(trialFile(req.path("name")))
-                .map { f -> InputStreamReader(FileInputStream(f)) }
-                .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
-                .orElseGet { Trial("", "", emptyList()) } // TODO: handle this failure case
-        Response(Status.OK).body(gson.toJson(data))
+            .map { f -> InputStreamReader(FileInputStream(f)) }
+            .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
+            .orElseGet { Trial("", "", emptyList()) } // TODO: handle this failure case
+        Response(OK).body(gson.toJson(data))
     }
 
     private fun loadTrials(): List<Trial> {
         activeTrials().mkdirs()
         return (activeTrials()
-                .listFiles { _, name -> name.endsWith("json") } ?: arrayOf<File>())
-                .map { f -> InputStreamReader(FileInputStream(f)) }
-                .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
+            .listFiles { _, name -> name.endsWith("json") } ?: arrayOf<File>())
+            .map { f -> InputStreamReader(FileInputStream(f)) }
+            .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
     }
 
-    private fun trialFile(name: String?): File = File(activeTrials(), "${name}.json")
-    private fun completeFile(name: String?): File = File(completeTrials(), "${name}.json")
+    private fun trialFile(name: String?): File = File(activeTrials(), "$name.json")
+    private fun completeFile(name: String?): File = File(completeTrials(), "$name.json")
 
     private fun newTrial(): HttpHandler = { req ->
         val timestamp = now().format(ofPattern("yyyyMMddhhmmss"))
         val newTrial = gson.fromJson(req.bodyString(), NewTrial::class.java)
-        val name = "${newTrial.name}_${timestamp}"
+        val name = "${newTrial.name}_$timestamp"
 
         // TODO: Handle failure
         activeTrials().mkdirs()
@@ -85,7 +104,7 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
 
         write(Trial(name, newTrial.scale, emptyList()), trialFile)
 
-        Response(Status.OK).body("""{ "url" : "/trial/${name}" } """)
+        Response(OK).body("""{ "url" : "/trial/$name" } """)
     }
 
     private fun addTrialButtonClick(): HttpHandler = { req ->
@@ -95,38 +114,38 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
         val trialFile = trialFile(req.path("name"))
 
         val data = load(trialFile)
-                .map { f -> InputStreamReader(FileInputStream(f)) }
-                .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
-                .orElseGet { Trial("name", "scale", emptyList()) }
+            .map { f -> InputStreamReader(FileInputStream(f)) }
+            .map { jsonString -> gson.fromJson(jsonString, Trial::class.java) }
+            .orElseGet { Trial("name", "scale", emptyList()) }
 
         val newData = data.copy(entries = data.entries + entry)
 
         write(newData, trialFile)
 
-        Response(Status.OK)
+        Response(OK)
     }
 
     private fun scale(): HttpHandler = { req ->
         val data = loadStream(config.scalesFile())
-                .map { f -> f.bufferedReader().readText() }
-                .map { json -> gson.fromJson(json, Array<Scale>::class.java) }
-                .orElse(emptyArray()).toList()
+            .map { f -> f.bufferedReader().readText() }
+            .map { json -> gson.fromJson(json, Array<Scale>::class.java) }
+            .orElse(emptyArray()).toList()
 
         val scale: Scale? = data.find { scale -> scale.name == req.path("name") }
 
         if (scale == null) {
             Response(Status.NOT_FOUND)
         } else {
-            Response(Status.OK).body(gson.toJson(scale))
+            Response(OK).body(gson.toJson(scale))
         }
     }
 
     private fun scales(): HttpHandler {
         return { _ ->
             val data = loadStream(config.scalesFile())
-                    .map { f -> f.bufferedReader().readText() }
-                    .orElse("[]")
-            Response(Status.OK).body(data)
+                .map { f -> f.bufferedReader().readText() }
+                .orElse("[]")
+            Response(OK).body(data)
         }
     }
 
@@ -135,7 +154,7 @@ class BorgyServer(private val gson: Gson, private val config: Configuration) {
     private fun load(filename: String): Optional<File> = load(File(filename))
 
     private fun loadStream(name: String): Optional<InputStream> =
-            Optional.ofNullable((BorgyServer::class.java).getResourceAsStream(name))
+        Optional.ofNullable((BorgyServer::class.java).getResourceAsStream(name))
 
     private fun write(data: Trial, file: File) = file.writeText(gson.toJson(data, Trial::class.java))
 
