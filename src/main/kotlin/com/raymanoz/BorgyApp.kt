@@ -23,8 +23,6 @@ import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.routing.static
-import org.http4k.server.Jetty
-import org.http4k.server.asServer
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -33,7 +31,8 @@ import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.Optional
 
-class BorgyServer(private val env: Environment) {
+class BorgyApp(private val env: Environment): HttpHandler {
+
     private val app = ServerFilters.Cors(UnsafeGlobalPermissive).then(routes(
         "/api" bind routes(
             "/ping" bind GET to ping(),
@@ -56,9 +55,7 @@ class BorgyServer(private val env: Environment) {
         static(Config.resourceLoader)
     ))
 
-    fun start() {
-        app.asServer(Jetty(Config.port(env))).start()
-    }
+    override fun invoke(p1: Request): Response = app(p1)
 
     private fun ping(): HttpHandler = { Response(OK).body("pong") }
 
@@ -145,7 +142,7 @@ class BorgyServer(private val env: Environment) {
     private fun File.load(): Optional<File> = if (exists()) Optional.of(this) else Optional.empty()
 
     private fun loadStream(name: String): Optional<InputStream> =
-        Optional.ofNullable((BorgyServer::class.java).getResourceAsStream(name))
+        Optional.ofNullable((BorgyApp::class.java).getResourceAsStream(name))
 
     private inline fun <reified T : Any> File.write(data: T) = writeText(asJsonString(data))
 
