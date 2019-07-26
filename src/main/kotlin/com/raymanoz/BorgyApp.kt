@@ -82,7 +82,7 @@ class BorgyApp(private val env: Environment): HttpHandler {
 
     private fun loadTrials(): List<Trial> = (activeTrials()
         .listFiles { _, name -> name.endsWith("json") } ?: arrayOf<File>())
-        .map { it.read() }
+        .map { it.read<Trial>() }
 
     private fun trialFile(name: String?): File = File(activeTrials(), "$name.json")
     private fun completeFile(name: String?): File = File(completeTrials(), "$name.json")
