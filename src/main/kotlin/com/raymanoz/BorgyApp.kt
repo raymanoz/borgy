@@ -31,7 +31,7 @@ import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.*
 
-class BorgyApp(private val env: Environment): HttpHandler {
+class BorgyApp(private val config: Config, private val env: Environment): HttpHandler {
 
     private val app = ServerFilters.Cors(UnsafeGlobalPermissive).then(routes(
             "/api" bind routes(
@@ -52,7 +52,7 @@ class BorgyApp(private val env: Environment): HttpHandler {
                             )
                     )
             ),
-            singlePageApp(Config.resourceLoader)
+            singlePageApp(config.resourceLoader)
     ))
 
     override fun invoke(p1: Request): Response = app(p1)
@@ -121,7 +121,7 @@ class BorgyApp(private val env: Environment): HttpHandler {
     }
 
     private fun scale(): HttpHandler = { req ->
-        val data = loadStream(Config.scalesFile(env))
+        val data = loadStream(config.scalesFile(env))
             .map { f -> f.bufferedReader().readText() }
             .map { json -> Jackson.parse(json).asA<Array<Scale>>().toList() }
             .orElse(emptyList())
@@ -133,7 +133,7 @@ class BorgyApp(private val env: Environment): HttpHandler {
     }
 
     private fun scales(): HttpHandler = { _ ->
-        val data = loadStream(Config.scalesFile(env))
+        val data = loadStream(config.scalesFile(env))
             .map { f -> f.bufferedReader().readText() }
             .orElse("[]")
         Response(OK).body(data)
@@ -146,9 +146,9 @@ class BorgyApp(private val env: Environment): HttpHandler {
 
     private inline fun <reified T : Any> File.write(data: T) = writeText(asJsonString(data))
 
-    private fun activeTrials() = Config.activeTrials(env).apply { mkdirs() }
+    private fun activeTrials() = config.activeTrials(env).apply { mkdirs() }
 
-    private fun completeTrials() = Config.completeTrials(env).apply { mkdirs() }
+    private fun completeTrials() = config.completeTrials(env).apply { mkdirs() }
 
     private inline fun <reified T : Any> File.read(): T = readText().asA(T::class)
 }

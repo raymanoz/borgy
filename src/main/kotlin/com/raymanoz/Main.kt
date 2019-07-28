@@ -6,5 +6,6 @@ import org.http4k.server.asServer
 
 fun main() {
     val env = Environment.ENV
-    BorgyApp(env).asServer(SunHttp(Config.port(env))).start()
+    val config = LocalDevConfig
+    BorgyApp(config, env).asServer(SunHttp(config.port(env))).start()
 }
