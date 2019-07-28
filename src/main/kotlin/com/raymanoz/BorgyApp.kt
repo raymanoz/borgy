@@ -3,6 +3,7 @@ package com.raymanoz
 import org.http4k.cloudnative.env.Environment
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
+import org.http4k.core.Method
 import org.http4k.core.Method.DELETE
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.PATCH
@@ -15,10 +16,10 @@ import org.http4k.core.then
 import org.http4k.core.with
 import org.http4k.filter.CorsPolicy.Companion.UnsafeGlobalPermissive
 import org.http4k.filter.ServerFilters
-import org.http4k.format.Gson
-import org.http4k.format.Gson.asA
-import org.http4k.format.Gson.asJsonString
-import org.http4k.format.Gson.auto
+import org.http4k.format.Jackson
+import org.http4k.format.Jackson.asA
+import org.http4k.format.Jackson.asJsonString
+import org.http4k.format.Jackson.auto
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
@@ -29,30 +30,33 @@ import java.nio.file.Files
 import java.time.Instant
 import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter.ofPattern
-import java.util.Optional
+import java.util.*
 
 class BorgyApp(private val env: Environment): HttpHandler {
 
     private val app = ServerFilters.Cors(UnsafeGlobalPermissive).then(routes(
-        "/api" bind routes(
-            "/ping" bind GET to ping(),
-            "/scales" bind routes(
-                "/{name}" bind GET to scale(),
-                "/" bind GET to scales()
+            "/api" bind routes(
+                    "/ping" bind GET to ping(),
+                    "/scales" bind routes(
+                            "/{name}" bind GET to scale(),
+                            "/" bind GET to scales()
+                    ),
+                    "/trials" bind routes(
+                            "/{name}" bind routes(
+                                    GET to trial(),
+                                    DELETE to endTrial(),
+                                    PATCH to addTrialButtonClick()
+                            ),
+                            routes(
+                                    GET to trials(),
+                                    POST to newTrial()
+                            )
+                    )
             ),
-            "/trials" bind routes(
-                "/{name}" bind routes(
-                    GET to trial(),
-                    DELETE to endTrial(),
-                    PATCH to addTrialButtonClick()
-                ),
-                routes(
-                    GET to trials(),
-                    POST to newTrial()
-                )
-            )
-        ),
-        static(Config.resourceLoader)
+            static(Config.resourceLoader),
+            "/{fallthrough:.*}" bind Method.GET to {
+                static(Config.resourceLoader)(Request(Method.GET, "/"))
+            }
     ))
 
     override fun invoke(p1: Request): Response = app(p1)
@@ -123,7 +127,7 @@ class BorgyApp(private val env: Environment): HttpHandler {
     private fun scale(): HttpHandler = { req ->
         val data = loadStream(Config.scalesFile(env))
             .map { f -> f.bufferedReader().readText() }
-            .map { json -> Gson.parse(json).asA<List<Scale>>() }
+            .map { json -> Jackson.parse(json).asA<Array<Scale>>().toList() }
             .orElse(emptyList())
 
         val scale: Scale? = data.find { scale -> scale.name == req.path("name") }
