@@ -11,11 +11,11 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    compile 'org.http4k:http4k-core:3.163.0'
-    compile 'org.http4k:http4k-server-jetty:3.163.0'
-    compile 'org.http4k:http4k-cloudnative:3.163.0'
-    compile 'org.http4k:http4k-client-okhttp:3.163.0'
-    compile 'org.http4k:http4k-format-jackson:3.163.0'
+    def http4k = '3.166.0'
+    compile "org.http4k:http4k-core:$http4k"
+    compile "org.http4k:http4k-cloudnative:$http4k"
+    compile "org.http4k:http4k-client-okhttp:$http4k"
+    compile "org.http4k:http4k-format-jackson:$http4k"
 }
 
 compileKotlin {

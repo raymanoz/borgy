@@ -11,5 +11,6 @@ object Config {
     val activeTrials = EnvironmentKey.string().map(::File).defaulted("trials.active", File("trials/active"))
     val completeTrials = EnvironmentKey.string().map(::File).defaulted("trials.complete", File("trials/complete"))
     val port = EnvironmentKey.int().defaulted("port", 9000)
-    val resourceLoader = ResourceLoader.Classpath("/client")
+//    val resourceLoader = ResourceLoader.Classpath("/client")
+    val resourceLoader = ResourceLoader.Directory("src/main/react/build")
 }

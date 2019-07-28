@@ -3,7 +3,6 @@ package com.raymanoz
 import org.http4k.cloudnative.env.Environment
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
-import org.http4k.core.Method
 import org.http4k.core.Method.DELETE
 import org.http4k.core.Method.GET
 import org.http4k.core.Method.PATCH
@@ -23,7 +22,7 @@ import org.http4k.format.Jackson.auto
 import org.http4k.routing.bind
 import org.http4k.routing.path
 import org.http4k.routing.routes
-import org.http4k.routing.static
+import org.http4k.routing.singlePageApp
 import java.io.File
 import java.io.InputStream
 import java.nio.file.Files
@@ -53,10 +52,7 @@ class BorgyApp(private val env: Environment): HttpHandler {
                             )
                     )
             ),
-            static(Config.resourceLoader),
-            "/{fallthrough:.*}" bind Method.GET to {
-                static(Config.resourceLoader)(Request(Method.GET, "/"))
-            }
+            singlePageApp(Config.resourceLoader)
     ))
 
     override fun invoke(p1: Request): Response = app(p1)
