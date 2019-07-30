@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import './Trial.css';
 import {Scale} from "./Scale";
 import {RouteComponentProps} from "react-router";
+import {server} from "../utils/server";
 
 interface UrlParams {
     name: string;
@@ -11,17 +12,17 @@ interface UrlParams {
 interface Props extends RouteComponentProps<UrlParams> {
 }
 
-export class Trial extends Component<Props, { scale: Scale, trial: String }> {
+export class Trial extends Component<Props, { scale: Scale, trialName: string }> {
     componentDidMount() {
         const {name} = this.props.match.params;
-        this.setState({trial: name});
-        fetch(`/api/trials/${name}`)
+        this.setState({trialName: name});
+        fetch(server.trial(name))
             .then(result => result.json())
             .then(json => this.fetchScale(json.scale));
     }
 
-    private fetchScale(name: String) {
-        fetch(`/api/scales/${name}`)
+    private fetchScale(name: string) {
+        fetch(server.scale(name))
             .then(result => result.json())
             .then(json => this.setState({scale: json}))
     }
@@ -33,7 +34,7 @@ export class Trial extends Component<Props, { scale: Scale, trial: String }> {
     private buttons(scale: Scale) {
         return scale ? <div className={"trial"}>{scale.description}<br/>
             <ul>{scale.intensities.map((intensity, index) =>
-                <li key={index}><Button trial={this.state.trial} intensity={intensity.number}
+                <li key={index}><Button trial={this.state.trialName} intensity={intensity.number}
                                         label={intensity.label}/></li>
             )}</ul>
         </div> : <div/>

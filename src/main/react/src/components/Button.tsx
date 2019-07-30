@@ -1,15 +1,16 @@
 import * as React from 'react';
 import './Button.css';
+import {server} from "../utils/server";
 
 export interface Props {
     intensity: Number;
-    label: String;
-    trial: String;
+    label: string;
+    trial: string;
 }
 
 
-function handleClick(trial: String, intensity: Number) {
-    fetch(`/api/trials/${trial}`, {method: "PATCH", body: `{ "intensity": ${intensity} }`})
+function handleClick(trialName: string, intensity: Number) {
+    fetch(server.trial(trialName), {method: "PATCH", body: `{ "intensity": ${intensity} }`})
 }
 
 

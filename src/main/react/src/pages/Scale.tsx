@@ -1,13 +1,13 @@
 export type Intensity = {
     number: Number,
-    label: String
+    label: string
 };
 
 export type Scale = {
-    name: String,
-    description: String,
+    name: string,
+    description: string,
     intensities: Array<Intensity>
 }
 
 export type Scales = Array<Scale>
-export type Trials = Array<String>
+export type Trials = Array<string>

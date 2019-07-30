@@ -3,6 +3,9 @@ import {Scale, Scales, Trials} from "./Scale";
 import {JsonDecoder} from "ts.data.json";
 import {History} from 'history';
 import {NavLink} from "react-router-dom";
+import Button from 'react-bootstrap/Button';
+import {server} from "../utils/server";
+
 
 interface StartTrialResponse {
     url: string;
@@ -32,7 +35,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     componentDidMount() {
-        fetch(`/api/scales`)
+        fetch(server.scales)
             .then(result => result.json())
             .then(s => this.setState({scales: s}));
 
@@ -40,9 +43,9 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     render() {
-        return <span>
+        return <div className="container-fluid">
             <h1>Borgy</h1>
-            <span id={"newTrial"}>
+            <span id="newTrial">
                 <h2>New trial</h2>
                 <fieldset>
                     <legend>Start a new trial</legend>
@@ -51,7 +54,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
                            onChange={event => this.onTrialNameChanged(event.target.value)}/><br/>
                     <label>Scale</label><br/>
                     {this.state ? this.state.scales.map(this.renderScaleRadio) : <span>Loading scales</span>}
-                    <button onClick={this.startTrial}>Begin</button>
+                    <Button onClick={this.startTrial}>Begin</Button>
                 </fieldset>
             </span>
             <br/>
@@ -61,17 +64,17 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
                     {this.state ? this.state.trials.map(this.renderActiveTrial) : <span>Loading active trials</span>}
                 </ul>
             </span>
-        </span>
+        </div>
     }
 
     private refreshTrials() {
-        fetch(`/api/trials`)
+        fetch(server.trials)
             .then(result => result.json())
             .then(t => this.setState({trials: t}))
     }
 
     private startTrial() {
-        fetch(`/api/trials`, {method: "POST", body: this.startTrialJsonFromState()})
+        fetch(server.trials, {method: "POST", body: this.startTrialJsonFromState()})
         // TODO : Handle failure response
             .then(result => result.json())
             .then(json => responseDecoder
@@ -103,14 +106,14 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
         </span>;
     }
 
-    private renderActiveTrial(trial: String, idx: number) {
+    private renderActiveTrial(trial: string, idx: number) {
         return <li key={idx}>
             <NavLink to={"/trial/" + trial}>{trial}</NavLink><button onClick={_ => this.completeTrial(trial)}>Complete</button>
         </li>
     }
 
-    private completeTrial(trial: String) {
-        fetch(`/api/trials/${trial}`, {method: "DELETE", credentials: 'same-origin'})
+    private completeTrial(trialName: string) {
+        fetch(server.trial(trialName), {method: "DELETE", credentials: 'same-origin'})
             .then(_ => this.refreshTrials())
     }
 
