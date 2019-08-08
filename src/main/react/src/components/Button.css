@@ -1,10 +1,17 @@
+.borg-button {
+    margin-top: 10px;
+    margin-right: 10px;
+}
+
+.borg-button-label {
+    font-size: 20px;
+}
+
 .borg-button, .borg-button:hover {
-    color: black;
-    background-color: white;
     height: 50px;
     width: 200px;
     font-size: 20px;
 }
-.borg-button:active, .borg-button:focus {
-    background-color: yellowgreen;
-}
+/*.borg-button:active, .borg-button:focus {*/
+/*    background-color: yellowgreen;*/
+/*}*/

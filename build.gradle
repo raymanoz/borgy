@@ -11,7 +11,7 @@ repositories {
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 
-    def http4k = '3.168.0'
+    def http4k = '3.172.0'
     compile "org.http4k:http4k-core:$http4k"
     compile "org.http4k:http4k-cloudnative:$http4k"
     compile "org.http4k:http4k-client-okhttp:$http4k"
@@ -47,7 +47,7 @@ jar {
         attributes 'Main-Class': 'com.raymanoz.MainKt'
     }
     from(webAppFiles) {
-        into 'client'
+        into 'public'
     }
     from {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }

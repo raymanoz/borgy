@@ -108,7 +108,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
 
     private renderActiveTrial(trial: string, idx: number) {
         return <li key={idx}>
-            <NavLink to={"/trial/" + trial}>{trial}</NavLink><button onClick={_ => this.completeTrial(trial)}>Complete</button>
+            <NavLink to={"/trial/" + trial}>{trial}</NavLink><button className="btn btn-danger" onClick={_ => this.completeTrial(trial)}>Complete</button>
         </li>
     }
 

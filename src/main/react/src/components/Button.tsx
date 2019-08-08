@@ -16,9 +16,12 @@ function handleClick(trialName: string, intensity: Number) {
 
 function Button({ intensity, label, trial }: Props) {
     return (
-      <button className={"borg-button"} onClick={() => handleClick(trial, intensity)}>
-          {label}
-      </button>
+        <div>
+            <button className={"borg-button btn btn-primary"} onClick={() => handleClick(trial, intensity)}>
+                {intensity}
+            </button>
+            <div className={"borg-button-label"}>{label}</div>
+        </div>
     );
 }
 

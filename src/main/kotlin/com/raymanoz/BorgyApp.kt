@@ -52,7 +52,7 @@ class BorgyApp(private val config: Config, private val env: Environment): HttpHa
                             )
                     )
             ),
-            singlePageApp(config.resourceLoader)
+            singlePageApp()
     ))
 
     override fun invoke(p1: Request): Response = app(p1)

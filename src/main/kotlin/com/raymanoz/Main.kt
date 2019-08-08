@@ -6,7 +6,7 @@ import org.http4k.server.asServer
 
 fun main() {
     val env = Environment.ENV
-    val config = LocalDevConfig
+    val config = JarConfig
     BorgyApp(config, env).asServer(SunHttp(config.port(env))).start()
 
     println("Borgy is running: http://localhost:${config.port(env)}/")
