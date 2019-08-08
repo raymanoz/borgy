@@ -10,5 +10,4 @@ fun main() {
     BorgyApp(config, env).asServer(SunHttp(config.port(env))).start()
 
     println("Borgy is running: http://localhost:${config.port(env)}/")
-
 }
