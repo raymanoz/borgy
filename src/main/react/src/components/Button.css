@@ -1,6 +1,6 @@
 .borg-button {
     margin-top: 10px;
-    margin-right: 10px;
+    margin-bottom: 10px;
 }
 
 .borg-button-label {
@@ -12,6 +12,8 @@
     width: 200px;
     font-size: 20px;
 }
+
+
 /*.borg-button:active, .borg-button:focus {*/
 /*    background-color: yellowgreen;*/
 /*}*/

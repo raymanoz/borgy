@@ -32,11 +32,18 @@ export class Trial extends Component<Props, { scale: Scale, trialName: string }>
     }
 
     private buttons(scale: Scale) {
-        return scale ? <div className={"trial"}>{scale.description}<br/>
-            <ul>{scale.intensities.map((intensity, index) =>
-                <li key={index}><Button trial={this.state.trialName} intensity={intensity.number}
-                                        label={intensity.label}/></li>
-            )}</ul>
+        return scale ? <div className="container">
+            <div className="row col-sm justify-content-center"><h1 className="trial">{scale.description}</h1></div>
+                {scale.intensities.map((intensity, index) =>
+                    <div key={index} className="row align-items-center">
+                        <div className="col">&nbsp;</div>
+                            <Button trial={this.state.trialName} intensity={intensity.number}/>
+                        <div className="col">
+                            <div className={"borg-button-label"}>{intensity.label}</div>
+                        </div>
+                        <div className="col">&nbsp;</div>
+                    </div>)
+                }
         </div> : <div/>
     }
 }

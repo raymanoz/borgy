@@ -4,7 +4,6 @@ import {server} from "../utils/server";
 
 export interface Props {
     intensity: Number;
-    label: string;
     trial: string;
 }
 
@@ -14,14 +13,11 @@ function handleClick(trialName: string, intensity: Number) {
 }
 
 
-function Button({ intensity, label, trial }: Props) {
+function Button({ intensity, trial }: Props) {
     return (
-        <div>
-            <button className={"borg-button btn btn-primary"} onClick={() => handleClick(trial, intensity)}>
-                {intensity}
-            </button>
-            <div className={"borg-button-label"}>{label}</div>
-        </div>
+            <div className="col">
+                <button className={"borg-button btn btn-primary"} onClick={() => handleClick(trial, intensity)}>{intensity}</button>
+            </div>
     );
 }
 
