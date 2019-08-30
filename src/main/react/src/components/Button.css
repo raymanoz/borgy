@@ -14,6 +14,6 @@
 }
 
 
-/*.borg-button:active, .borg-button:focus {*/
-/*    background-color: yellowgreen;*/
-/*}*/
+.borg-button:active, .borg-button:focus {
+    background-color: yellowgreen;
+}

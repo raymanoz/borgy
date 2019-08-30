@@ -109,7 +109,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     private static renderScaleRadio(scale: Scale) {
         let scaleName = `${scale.name}`;
         let radioId = `scale-${scale.name}`;
-        return <option key={radioId} value={radioId}>{scaleName}</option>;
+        return <option key={radioId} value={scaleName}>{scaleName}</option>;
     }
 
     private renderActiveTrial(trial: string, idx: number) {

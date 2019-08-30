@@ -20,7 +20,7 @@ class JarConfig(env: Environment) : Config {
     override val activeTrials = EnvironmentKey.string().map(::File).defaulted("trials.active", File("trials/active"))(env)
     override val completeTrials = EnvironmentKey.string().map(::File).defaulted("trials.complete", File("trials/complete"))(env)
     override val port = EnvironmentKey.int().defaulted("port", 9000)(env)
-    override val client = ResourceLoader.Classpath("/client")
+    override val client = ResourceLoader.Classpath("/public")
 }
 
 class LocalDevConfig(env: Environment) : Config {

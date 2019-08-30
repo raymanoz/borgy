@@ -1,57 +1,105 @@
 [
   {
     "name": "RPE",
-    "description": "Rating of perceived exertion",
+    "description": "How hard do you feel the work rate is?",
     "intensities": [
+      {
+        "number": 6,
+        "label": ""
+      },
       {
         "number": 7,
         "label": "Very, very light"
+      },
+      {
+        "number": 8,
+        "label": ""
       },
       {
         "number": 9,
         "label": "Very light"
       },
       {
+        "number": 10,
+        "label": ""
+      },
+      {
         "number": 11,
         "label": "Fairly light"
+      },
+      {
+        "number": 12,
+        "label": ""
       },
       {
         "number": 13,
         "label": "Somewhat hard"
       },
       {
+        "number": 14,
+        "label": ""
+      },
+      {
         "number": 15,
         "label": "Hard"
+      },
+      {
+        "number": 16,
+        "label": ""
       },
       {
         "number": 17,
         "label": "Very hard"
       },
       {
+        "number": 18,
+        "label": ""
+      },
+      {
         "number": 19,
         "label": "Very, very hard"
+      },
+      {
+        "number": 20,
+        "label": ""
       }
     ]
   },
   {
     "name": "Thermal comfort",
-    "description": "comfort",
+    "description": "How comfortable are you with the current environment?",
     "intensities": [
       {
         "number": 1,
         "label": "Comfortable"
       },
       {
+        "number": 1.5,
+        "label": ""
+      },
+      {
         "number": 2,
         "label": "Slightly comfortable"
+      },
+      {
+        "number": 2.5,
+        "label": ""
       },
       {
         "number": 3,
         "label": "Uncomfortable"
       },
       {
+        "number": 3.5,
+        "label": ""
+      },
+      {
         "number": 4,
         "label": "Very uncomfortable"
+      },
+      {
+        "number": 4.5,
+        "label": ""
       },
       {
         "number": 5,
@@ -61,7 +109,7 @@
   },
   {
     "name": "Thermal sensation",
-    "description": "sensation",
+    "description": "Rate your perception of thermal sensation in the current environment",
     "intensities": [
       {
         "number": 1,
