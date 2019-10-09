@@ -1,9 +1,10 @@
 import React, {Component} from "react";
-import Button from "../components/Button";
 import './Trial.css';
 import {Intensity, Scale} from "./Scale";
 import {RouteComponentProps} from "react-router";
 import {server} from "../utils/server";
+import Gamepad, {Axis, Button as GPButton} from 'react-gamepad';
+import Button from "../components/Button";
 
 interface UrlParams {
     name: string;
@@ -19,18 +20,17 @@ interface State {
 }
 
 export class Trial extends Component<Props, State> {
+    constructor(props: Readonly<Props>) {
+        super(props);
+        this.handleButtonDown = this.handleButtonDown.bind(this);
+
+    }
     componentDidMount() {
         const {name} = this.props.match.params;
         this.setState({trialName: name});
         fetch(server.trial(name))
             .then(result => result.json())
             .then(json => this.fetchScale(json.scale));
-
-        document.addEventListener("keypress", this.handleKeyPress, true);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener("keypress", this.handleKeyPress);
     }
 
     private fetchScale(name: string) {
@@ -40,21 +40,8 @@ export class Trial extends Component<Props, State> {
     }
 
     render() {
-        return (this.state ? this.buttons(this.state.scale) : <span/>)
-    }
-
-    handleKeyPress: EventListener = (ev) => {
-        const key = (ev as KeyboardEvent).key;
-        const selectedIndex =
-            key === "[" ? (this.state.selectedIndex !== undefined ? Math.max(0, this.state.selectedIndex - 1) : 0) :
-                key === "]" ? (this.state.selectedIndex !== undefined ? Math.min(this.state.scale.intensities.length - 1, (this.state.selectedIndex + 1)) : 0) :
-                    this.state.selectedIndex;
-
-        if (selectedIndex !== undefined && this.state.selectedIndex !== selectedIndex) {
-            this.logStateChange(this.state.scale.intensities[selectedIndex]);
-        }
-        this.setState({selectedIndex});
-
+        const buttons: JSX.Element = this.state ? this.buttons(this.state.scale) : <span></span>;
+        return this.gamepad(buttons);
     }
 
     private logStateChange(intensity: Intensity) {
@@ -68,7 +55,8 @@ export class Trial extends Component<Props, State> {
             {scale.intensities.map((intensity, index) =>
                 <div key={index} className="row align-items-center">
                     <div className="col"/>
-                    <Button intensity={intensity.number} selected={this.state.selectedIndex !== undefined ? this.state.selectedIndex === index : false}/>
+                    <Button intensity={intensity.number}
+                            selected={this.state.selectedIndex !== undefined ? this.state.selectedIndex === index : false}/>
                     <div className="col">
                         <div className={"borg-button-label"}>{intensity.label}</div>
                     </div>
@@ -77,4 +65,18 @@ export class Trial extends Component<Props, State> {
             }
         </div> : <div/>
     }
+
+    private handleButtonDown(buttonName: GPButton) {
+        const selectedIndex = this.state.selectedIndex === undefined ? 0 :
+            buttonName === 'A' ? Math.max(0, this.state.selectedIndex - 1) :
+                buttonName === 'B' ? Math.min(this.state.scale.intensities.length - 1, (this.state.selectedIndex + 1)) :
+                    this.state.selectedIndex;
+
+        if (selectedIndex !== undefined && this.state.selectedIndex !== selectedIndex) {
+            this.logStateChange(this.state.scale.intensities[selectedIndex]);
+        }
+        this.setState({selectedIndex});
+    }
+
+    private gamepad = (children: JSX.Element) => <Gamepad onButtonDown={this.handleButtonDown}>{children}</Gamepad>;
 }
