@@ -3,22 +3,21 @@ import './Button.css';
 import {server} from "../utils/server";
 
 export interface Props {
-    intensity: Number;
+    intensity: number;
     trial: string;
+    selected: boolean
 }
 
-
-function handleClick(trialName: string, intensity: Number) {
+function handleClick(trialName: string, intensity: number) {
     fetch(server.trial(trialName), {method: "PATCH", body: `{ "intensity": ${intensity} }`})
 }
 
-
-function Button({ intensity, trial }: Props) {
+const Button = ({ intensity, trial, selected }: Props) => {
     return (
-            <div className="col">
-                <button className={"borg-button btn btn-primary"} onClick={() => handleClick(trial, intensity)}>{intensity}</button>
-            </div>
+        <div className="col">
+            <div className={`borg-button btn btn-primary ${selected ? 'borg-button-selected' : ''}`}>{intensity}</div>
+        </div>
     );
-}
+};
 
 export default Button;

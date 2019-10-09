@@ -14,6 +14,6 @@
 }
 
 
-.borg-button:active, .borg-button:focus {
+.borg-button-selected {
     background-color: yellowgreen;
 }

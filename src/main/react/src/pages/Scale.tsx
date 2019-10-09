@@ -1,5 +1,5 @@
 export type Intensity = {
-    number: Number,
+    number: number,
     label: string
 };
 

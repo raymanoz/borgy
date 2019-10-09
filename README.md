@@ -8,8 +8,8 @@ See https://en.wikipedia.org/wiki/Rating_of_perceived_exertion
 Requirements
 ============
 
-* node 10.15.3
-* yarn 1.12.3 (version probably doesn't really matter)
+* node 10.16.3
+* yarn
 
 Setup
 =====
