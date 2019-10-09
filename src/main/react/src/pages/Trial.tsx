@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import Button from "../components/Button";
 import './Trial.css';
-import {Scale} from "./Scale";
+import {Intensity, Scale} from "./Scale";
 import {RouteComponentProps} from "react-router";
 import {server} from "../utils/server";
 
@@ -49,9 +49,18 @@ export class Trial extends Component<Props, State> {
             key === "[" ? (this.state.selectedIndex !== undefined ? Math.max(0, this.state.selectedIndex - 1) : 0) :
                 key === "]" ? (this.state.selectedIndex !== undefined ? Math.min(this.state.scale.intensities.length - 1, (this.state.selectedIndex + 1)) : 0) :
                     this.state.selectedIndex;
+
+        if (selectedIndex !== undefined && this.state.selectedIndex !== selectedIndex) {
+            this.logStateChange(this.state.scale.intensities[selectedIndex]);
+        }
         this.setState({selectedIndex});
 
     }
+
+    private logStateChange(intensity: Intensity) {
+        fetch(server.trial(this.state.trialName), {method: "PATCH", body: `{ "intensity": ${intensity.number} }`})
+    }
+
 
     private buttons(scale: Scale) {
         return scale ? <div className="container">
@@ -59,8 +68,7 @@ export class Trial extends Component<Props, State> {
             {scale.intensities.map((intensity, index) =>
                 <div key={index} className="row align-items-center">
                     <div className="col"/>
-                    <Button trial={this.state.trialName} intensity={intensity.number}
-                            selected={this.state.selectedIndex !== undefined ? this.state.selectedIndex === index : false}/>
+                    <Button intensity={intensity.number} selected={this.state.selectedIndex !== undefined ? this.state.selectedIndex === index : false}/>
                     <div className="col">
                         <div className={"borg-button-label"}>{intensity.label}</div>
                     </div>
