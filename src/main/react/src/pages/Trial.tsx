@@ -3,7 +3,7 @@ import './Trial.css';
 import {Intensity, Scale} from "./Scale";
 import {RouteComponentProps} from "react-router";
 import {server} from "../utils/server";
-import Gamepad, {Axis, Button as GPButton} from 'react-gamepad';
+import Gamepad, {Button as GPButton} from 'react-gamepad';
 import Button from "../components/Button";
 
 interface UrlParams {
@@ -23,6 +23,8 @@ export class Trial extends Component<Props, State> {
     constructor(props: Readonly<Props>) {
         super(props);
         this.handleButtonDown = this.handleButtonDown.bind(this);
+        this.handleUp = this.handleUp.bind(this);
+        this.handleDown = this.handleDown.bind(this);
 
     }
     componentDidMount() {
@@ -78,5 +80,11 @@ export class Trial extends Component<Props, State> {
         this.setState({selectedIndex});
     }
 
-    private gamepad = (children: JSX.Element) => <Gamepad onButtonDown={this.handleButtonDown}>{children}</Gamepad>;
+    private handleUp = () => this.handleButtonDown("A");
+
+    private handleDown = () => this.handleButtonDown("B");
+
+    private gamepad = (children: JSX.Element) =>
+        <Gamepad onUp={this.handleUp} onDown={this.handleDown}
+            onButtonDown={this.handleButtonDown}>{children}</Gamepad>;
 }
