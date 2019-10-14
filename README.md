@@ -22,7 +22,7 @@ Run (in dev mode)
 
 * start backend
     `Main.kt` (^-shift-r) or
-    Use "Start Serevr" in IDEA run menu
+    Use "Start Server" in IDEA run menu
 * start frontend, in `src/main/react`
     `yarn start`
     
