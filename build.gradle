@@ -39,7 +39,6 @@ task uiClean(type: Exec) {
 
 task uiBuild(type: Exec) {
     workingDir 'src/main/react'
-    environment NODE_ENV: 'production'
     commandLine(['yarn', 'build'])
 }
 

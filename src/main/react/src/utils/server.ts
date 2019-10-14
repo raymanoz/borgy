@@ -8,6 +8,7 @@ export interface Server {
 console.log(process.env.NODE_ENV);
 
 let reactappserver = process.env.REACT_APP_SERVER;
+console.log(reactappserver);
 
 export let server: Server = {
     scales: `${reactappserver}/api/scales`,
