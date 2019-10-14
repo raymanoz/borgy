@@ -1,13 +1,13 @@
-export type Intensity = {
-    number: number,
-    label: string
-};
-
-export type Scale = {
-    name: string,
-    description: string,
-    intensities: Array<Intensity>
+export interface Intensity {
+    number: number;
+    label: string;
 }
 
-export type Scales = Array<Scale>
-export type Trials = Array<string>
+export interface Scale {
+    name: string;
+    description: string;
+    intensities: Intensity[];
+}
+
+export type Scales = Scale[];
+export type Trials = string[];

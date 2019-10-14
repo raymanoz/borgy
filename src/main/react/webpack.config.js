@@ -5,15 +5,15 @@ const path = require('path');
 module.exports = {
     mode: 'development',
     resolve: {
-        extensions: ['.tsx', '.ts', '.js', '.jsx'],
+        extensions: ['.tsx', '.ts', '.js'],
     },
     entry: './src/index.ts',
-    devtool: 'inline-source-map',
+    devtool: 'source-map',
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: ['awesome-typescript-loader','tslint-loader'],
                 exclude: /node_modules/,
             },
             {
