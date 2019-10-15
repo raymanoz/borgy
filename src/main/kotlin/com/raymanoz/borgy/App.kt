@@ -24,7 +24,7 @@ import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.routing.singlePageApp
 
-class App(private val config: Config,
+class App(config: Config,
           private val scales: ScalesRepository, private val trials: TrialsRepository) : HttpHandler {
 
     private val app = ServerFilters.Cors(UnsafeGlobalPermissive).then(routes(
