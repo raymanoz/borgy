@@ -1,6 +1,6 @@
-package com.raymanoz
+package com.raymanoz.borgy
 
-import com.raymanoz.scales.ScalesRepository
+import com.raymanoz.borgy.scale.ScalesRepository
 import org.http4k.core.Body
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method.DELETE
@@ -30,7 +30,7 @@ import java.time.LocalDateTime.now
 import java.time.format.DateTimeFormatter.ofPattern
 import java.util.*
 
-class BorgyApp(private val config: Config, private val scales: ScalesRepository) : HttpHandler {
+class App(private val config: Config, private val scales: ScalesRepository) : HttpHandler {
 
     private val app = ServerFilters.Cors(UnsafeGlobalPermissive).then(routes(
             "/api" bind routes(

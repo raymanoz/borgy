@@ -1,6 +1,6 @@
-package com.raymanoz.scales
+package com.raymanoz.borgy.scale
 
-import com.raymanoz.Intensity
+import com.raymanoz.borgy.Intensity
 
 class InMemoryScalesRepository(scales: List<Scale>? = null) : ScalesRepository {
 

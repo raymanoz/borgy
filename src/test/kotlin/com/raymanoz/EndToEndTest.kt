@@ -1,7 +1,8 @@
 package com.raymanoz
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.raymanoz.scales.InMemoryScalesRepository
+import com.raymanoz.borgy.App
+import com.raymanoz.borgy.scale.InMemoryScalesRepository
 import org.http4k.client.OkHttp
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test
 class EndToEndTest {
     private val client = OkHttp()
     private val config = StubConfig()
-    private val server = BorgyApp(config, InMemoryScalesRepository()).asServer(SunHttp(config.port))
+    private val server = App(config, InMemoryScalesRepository()).asServer(SunHttp(config.port))
 
     @BeforeEach
     fun setup() {

@@ -1,9 +1,9 @@
-package com.raymanoz.scales
+package com.raymanoz.borgy.scale
 
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import com.raymanoz.BorgyApp
-import com.raymanoz.Intensity
+import com.raymanoz.borgy.App
+import com.raymanoz.borgy.Intensity
 import com.raymanoz.StubConfig
 import org.http4k.core.Method
 import org.http4k.core.Request
@@ -22,7 +22,7 @@ class ScalesTest {
             ))
     )
 
-    private val client = BorgyApp(StubConfig(), InMemoryScalesRepository(scales))
+    private val client = App(StubConfig(), InMemoryScalesRepository(scales))
 
     @Test
     fun `can list all scales`() {

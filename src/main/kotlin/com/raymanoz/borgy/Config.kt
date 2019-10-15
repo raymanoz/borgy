@@ -1,4 +1,4 @@
-package com.raymanoz
+package com.raymanoz.borgy
 
 import org.http4k.cloudnative.env.Environment
 import org.http4k.cloudnative.env.EnvironmentKey

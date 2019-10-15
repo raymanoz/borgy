@@ -1,6 +1,6 @@
-package com.raymanoz.scales
+package com.raymanoz.borgy.scale
 
-import com.raymanoz.Intensity
+import com.raymanoz.borgy.Intensity
 import com.raymanoz.util.Json
 
 data class Scale(val name: String, val description: String, val intensities: List<Intensity>)

@@ -1,4 +1,4 @@
-package com.raymanoz
+package com.raymanoz.borgy
 
 import java.time.Instant
 
