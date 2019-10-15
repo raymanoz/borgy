@@ -11,17 +11,17 @@ class ConfigTest {
     @Test
     fun canLoadDevConfig() {
         System.setProperty("config", "dev")
-        assertThat(Config.load(Environment.ENV).javaClass.simpleName, equalTo("DevConfig"))
+        assertThat(load(Environment.ENV).javaClass.simpleName, equalTo("DevConfig"))
     }
 
     @Test
     fun canLoadJarConfig() {
         System.setProperty("config", "jar")
-        assertThat(Config.load(Environment.ENV).javaClass.simpleName, equalTo("JarConfig"))
+        assertThat(load(Environment.ENV).javaClass.simpleName, equalTo("JarConfig"))
     }
 
     @Test
     fun defaultsToJarConfig() {
-        assertThat(Config.load(Environment.ENV).javaClass.simpleName, equalTo("JarConfig"))
+        assertThat(load(Environment.ENV).javaClass.simpleName, equalTo("JarConfig"))
     }
 }

@@ -16,8 +16,9 @@ dependencies {
     compile "org.http4k:http4k-cloudnative:$http4k"
     compile "org.http4k:http4k-client-okhttp:$http4k"
     compile "org.http4k:http4k-format-jackson:$http4k"
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.5.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
+    testImplementation "org.http4k:http4k-testing-hamkrest:$http4k"
     testImplementation 'com.natpryce:hamkrest:1.7.0.0'
 }
 

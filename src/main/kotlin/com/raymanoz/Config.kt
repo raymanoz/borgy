@@ -9,18 +9,16 @@ import java.io.File
 import kotlin.system.exitProcess
 
 
-interface Config {
-    companion object {
-        fun load(env: Environment): Config = when (System.getProperty("config", "jar")) {
-            "dev" -> DevConfig(env)
-            "jar" -> JarConfig(env)
-            else -> {
-                System.err.println("Unknown config: " + env["config"])
-                exitProcess(-1);
-            }
-        }
+fun load(env: Environment): Config = when (System.getProperty("config", "jar")) {
+    "dev" -> DevConfig(env)
+    "jar" -> JarConfig(env)
+    else -> {
+        System.err.println("Unknown config: " + env["config"])
+        exitProcess(-1)
     }
+}
 
+interface Config {
     val scalesFile: String
     val activeTrials: File
     val completeTrials: File
