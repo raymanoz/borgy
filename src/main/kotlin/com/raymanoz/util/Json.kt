@@ -12,6 +12,6 @@ object Json {
                 }
             }).asA<Array<T>>().toList()
 
-    private fun loadStreamOrDie(name: String): InputStream =
-            (Json::class.java).getResourceAsStream(name) ?: throw Error("${name} not found")
+    fun loadStreamOrDie(name: String): InputStream =
+            (Json::class.java).getResourceAsStream(name) ?: throw Error("$name not found")
 }
