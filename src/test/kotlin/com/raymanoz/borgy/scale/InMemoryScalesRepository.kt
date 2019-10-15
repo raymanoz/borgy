@@ -1,7 +1,5 @@
 package com.raymanoz.borgy.scale
 
-import com.raymanoz.borgy.Intensity
-
 class InMemoryScalesRepository(scales: List<Scale>? = null) : ScalesRepository {
 
     private val internalScales = scales ?: listOf(

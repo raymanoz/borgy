@@ -3,7 +3,6 @@ package com.raymanoz.borgy.scale
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.raymanoz.borgy.App
-import com.raymanoz.borgy.Intensity
 import com.raymanoz.StubConfig
 import com.raymanoz.borgy.trial.InMemoryTrialsRepository
 import org.http4k.core.Method
