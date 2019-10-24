@@ -2,12 +2,14 @@ package com.raymanoz.borgy.scale
 
 import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
-import com.raymanoz.borgy.App
 import com.raymanoz.StubConfig
+import com.raymanoz.borgy.App
 import com.raymanoz.borgy.trial.InMemoryTrialsRepository
+import com.raymanoz.borgy.trial.TrialsEndpoints
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Status
+import org.http4k.format.Jackson
 import org.http4k.hamkrest.hasBody
 import org.http4k.hamkrest.hasStatus
 import org.junit.jupiter.api.Test
@@ -22,13 +24,17 @@ class ScalesTest {
             ))
     )
 
-    private val client = App(StubConfig(), InMemoryScalesRepository(scales), InMemoryTrialsRepository())
+    private val client = App(StubConfig(), TrialsEndpoints(InMemoryTrialsRepository()), ScalesEndpoints(InMemoryScalesRepository(scales)))
 
     @Test
     fun `can list all scales`() {
         assertThat(
                 client(Request(Method.GET, "/api/scales")),
-                hasBody("""[{"name":"name1","description":"desc1","intensities":[{"number":1,"label":"intensity1"}]},{"name":"name2","description":"desc1","intensities":[{"number":2,"label":"intensity2"}]}]""")
+                Jackson.hasBody(
+                        """[
+                          |  {"name":"name1","description":"desc1","intensities":[{"number":1,"label":"intensity1"}]},
+                          |  {"name":"name2","description":"desc1","intensities":[{"number":2,"label":"intensity2"}]}
+                          |]""".trimMargin())
         )
     }
 

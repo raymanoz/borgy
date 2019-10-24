@@ -1,4 +1,5 @@
 import {History} from "history";
+import * as R from "ramda";
 import React, {Component} from "react";
 import Button from "react-bootstrap/Button";
 import {NavLink} from "react-router-dom";
@@ -18,22 +19,34 @@ const responseDecoder = JsonDecoder.object<StartTrialResponse>(
     "StartTrialResponse",
 );
 
-export class Home extends Component<{ history: History }, { scales: Scales, trials: Trials, trialName: string, trialScale: string }> {
+interface Props {
+    history: History;
+}
 
-    private static renderScaleRadio(scale: Scale) {
-        const scaleName = `${scale.name}`;
-        const radioId = `scale-${scale.name}`;
-        return <option key={radioId} value={scaleName}>{scaleName}</option>;
-    }
-    constructor(props: Readonly<{ history: History }>) {
+interface State {
+    scales: Scales;
+    trials: Trials;
+    trialName: string;
+    trialScales: Scales;
+}
+
+interface StartTrial {
+    name: string;
+    scales: string[];
+}
+
+export class Home extends Component<Props, State> {
+
+    constructor(props: Readonly<Props>) {
         super(props);
         this.state = {
             scales: [],
             trials: [],
             trialName: "",
-            trialScale: "",
+            trialScales: [],
         };
-        // Home.renderScaleRadio = Home.renderScaleRadio.bind(this);
+        this.renderScaleCheckbox = this.renderScaleCheckbox.bind(this);
+        this.handleScaleSelectionChange = this.handleScaleSelectionChange.bind(this);
         this.renderActiveTrial = this.renderActiveTrial.bind(this);
         this.startTrialJsonFromState = this.startTrialJsonFromState.bind(this);
         this.startTrial = this.startTrial.bind(this);
@@ -62,16 +75,20 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
                              aria-describedby="basic-addon1" onChange={(event) => this.onTrialNameChanged(event.target.value)}/>
                     </div>
 
-                    <div className="input-group mb-3">
+                    {/*                    <div className="input-group mb-3">
                         <div className="input-group-prepend">
                             <label className="input-group-text" htmlFor="scale">Scale</label>
                         </div>
+
                         <select className="custom-select" id="scale" defaultValue="choose"
                                 onChange={(event) => this.onTrialScaleChanged(event.target.value)}>
                             <option value="choose">Choose...</option>
                             {this.state ? this.state.scales.map(Home.renderScaleRadio) : <span/>}
                         </select>
-                    </div>
+*/}
+
+                    {this.state ? this.state.scales.map(this.renderScaleCheckbox) : <span/>}
+                    {/*</div>*/}
                 </div>
                 <Button onClick={this.startTrial}>Begin</Button>
             </span>
@@ -90,7 +107,7 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     }
 
     private startTrial() {
-        fetch(server.trials, {method: "POST", body: this.startTrialJsonFromState()})
+        fetch(server.trials, {method: "POST", body: JSON.stringify(this.startTrialJsonFromState())})
         // TODO : Handle failure response
             .then((result) => result.json())
             .then((json) => responseDecoder
@@ -100,16 +117,15 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
 
     }
 
-    private startTrialJsonFromState() {
-        return `{ "name": "${this.state.trialName}", "scale": "${this.state.trialScale}" }`;
+    private startTrialJsonFromState(): StartTrial {
+        return {
+            name: this.state.trialName,
+            scales: this.state.trialScales.map((s) => s.name),
+        };
     }
 
     private onTrialNameChanged(value: string) {
         this.setState({trialName: value});
-    }
-
-    private onTrialScaleChanged(value: string) {
-        this.setState({trialScale: value});
     }
 
     private renderActiveTrial(trial: string, idx: number) {
@@ -122,6 +138,27 @@ export class Home extends Component<{ history: History }, { scales: Scales, tria
     private completeTrial(trialName: string) {
         fetch(server.trial(trialName), {method: "DELETE", credentials: "same-origin"})
             .then((_) => this.refreshTrials());
+    }
+
+    private handleScaleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const changingScale = this.state.scales.find((scale) => scale.name === event.target.id);
+        // tslint:disable-next-line:no-console
+        console.log(this.state.trialScales);
+        if (changingScale) {
+            if (this.state.trialScales.includes(changingScale)) {
+                this.setState({trialScales: this.state.trialScales.filter((s) => s !== changingScale)});
+            } else {
+                this.setState({trialScales: R.append(changingScale, this.state.trialScales)});
+            }
+        }
+    }
+
+    private renderScaleCheckbox(scale: Scale) {
+        return <div className="form-check" key={scale.name}>
+            <input className="form-check-input" type="checkbox" id={scale.name}
+                   onChange={this.handleScaleSelectionChange}/>
+            <label className="form-check-label" htmlFor={scale.name}>{scale.name}</label>
+        </div>;
     }
 
 }

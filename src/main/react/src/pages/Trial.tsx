@@ -1,21 +1,17 @@
 import React, {Component} from "react";
 import Gamepad, {Button as GPButton} from "react-gamepad";
-import {RouteComponentProps} from "react-router";
 import Button from "../components/Button";
 import {server} from "../utils/server";
 import {Intensity, Scale} from "./Scale";
 import "./Trial.css";
 
-interface UrlParams {
-    name: string;
-}
-
-interface Props extends RouteComponentProps<UrlParams> {
+interface Props {
+    trialName: string;
+    scale: string;
 }
 
 interface State {
     scale: Scale;
-    trialName: string;
     selectedIndex?: number;
 }
 
@@ -27,18 +23,17 @@ export class Trial extends Component<Props, State> {
         this.handleDown = this.handleDown.bind(this);
 
     }
+
     public componentDidMount() {
-        const {name} = this.props.match.params;
-        this.setState({trialName: name});
-        fetch(server.trial(name))
-            .then((result) => result.json())
-            .then((json) => this.fetchScale(json.scale));
+        this.fetchScale(this.props.scale);
     }
 
     public render() {
-        const buttons: JSX.Element = this.state ? this.buttons(this.state.scale) : <span></span>;
+        const buttons: JSX.Element = this.state ? this.buttons(this.state.scale) : <span/>;
         return this.gamepad(buttons);
     }
+
+    private trialName = () => this.props.trialName;
 
     private fetchScale(name: string) {
         fetch(server.scale(name))
@@ -47,7 +42,7 @@ export class Trial extends Component<Props, State> {
     }
 
     private logStateChange(intensity: Intensity) {
-        fetch(server.trial(this.state.trialName), {method: "PATCH", body: `{ "intensity": ${intensity.number} }`});
+        fetch(server.trial(this.trialName()), {method: "PATCH", body: `{ "scale" : ${this.state.scale}, "intensity": ${intensity.number} }`});
     }
 
     private buttons(scale: Scale) {
@@ -85,5 +80,5 @@ export class Trial extends Component<Props, State> {
 
     private gamepad = (children: JSX.Element) =>
         <Gamepad onUp={this.handleUp} onDown={this.handleDown}
-            onButtonDown={this.handleButtonDown}>{children}</Gamepad>
+                 onButtonDown={this.handleButtonDown}>{children}</Gamepad>
 }

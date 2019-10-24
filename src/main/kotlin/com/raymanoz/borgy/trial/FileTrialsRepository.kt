@@ -11,17 +11,17 @@ import java.time.format.DateTimeFormatter
 class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : TrialsRepository {
     override fun names(): List<String> = loadTrials().map { it.name }
 
-    override fun newTrial(name: String, scale: String): Trial {
+    override fun newTrial(name: String, scales: List<String>): Trial {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"))
         val timestampedName = "${name}_${timestamp}"
-        val newTrial = Trial(timestampedName, scale, emptyList())
+        val trial = Trial(timestampedName, scales.associateWith { scale -> emptyList<Entry>() })
 
         trialFile(timestampedName).apply {
             createNewFile()
-            write(newTrial)
+            write(trial)
         }
 
-        return newTrial
+        return trial
     }
 
     override fun get(name: String): Trial? =
@@ -34,12 +34,14 @@ class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : T
         }
     }
 
-    override fun put(name: String, entry: Entry): Trial? =
+    override fun put(name: String, state: State): Trial? =
             withTrialFile(name) {
                 val data = it.read<Trial>()
-                val newData = data.copy(entries = data.entries + entry.copy(time = Instant.now()))
-                it.write(newData)
-                newData
+                data.entries[state.scale]?.let { entries ->
+                    val newData = data.copy(entries = (data.entries + Pair(state.scale, entries + Entry(Instant.now(), state.intensity))))
+                    it.write(newData)
+                    newData
+                }
             }
 
     private fun trialFile(name: String): File = File(activeTrials(), "$name.json")
