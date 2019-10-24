@@ -34,8 +34,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html',
             filename: 'index.html',
-            inject: 'body',
-            favicon: "./src/favicon.ico"
+            inject: 'body'
         }),
         new webpack.DefinePlugin({
             'process.env.REACT_APP_SERVER': "'http://localhost:9000'"

@@ -142,8 +142,6 @@ export class Home extends Component<Props, State> {
 
     private handleScaleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
         const changingScale = this.state.scales.find((scale) => scale.name === event.target.id);
-        // tslint:disable-next-line:no-console
-        console.log(this.state.trialScales);
         if (changingScale) {
             if (this.state.trialScales.includes(changingScale)) {
                 this.setState({trialScales: this.state.trialScales.filter((s) => s !== changingScale)});

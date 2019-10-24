@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import Gamepad from "react-gamepad";
 import {RouteComponentProps} from "react-router";
 import {server} from "../utils/server";
 import {Trial} from "./Trial";
@@ -13,6 +14,7 @@ interface AggregateTrialProps extends RouteComponentProps<UrlParams> {
 
 interface AggregateTrialState {
     scales: string[];
+    selectedScale: number;
 }
 
 export class AggregateTrial extends Component<AggregateTrialProps, AggregateTrialState> {
@@ -20,6 +22,7 @@ export class AggregateTrial extends Component<AggregateTrialProps, AggregateTria
         super(props);
         this.state = {
             scales: [],
+            selectedScale: 0,
         };
     }
 
@@ -32,11 +35,27 @@ export class AggregateTrial extends Component<AggregateTrialProps, AggregateTria
     }
 
     public render = () => this.state.scales ?
-        <div className={"container"}>
+        this.gamepad(<div className={"container"}>
             <div className={"row"}>
-                {this.state.scales.map((scale, idx) => <div key={idx} className={"col"}><Trial trialName={this.trialName()} scale={scale}/></div>)}
+                {this.state.scales.map((scale, idx) =>
+                    <div key={idx} className={"col"}>
+                        <Trial trialName={this.trialName()} scale={scale}
+                               selected={this.state.selectedScale !== undefined ? this.state.selectedScale === idx : false}/>
+                    </div>)}
             </div>
-        </div> : <span/>
+        </div>) : <span/>
 
     private trialName = () => this.props.match.params.name;
+
+    private handleLeft = () => {
+        this.setState({selectedScale: Math.max(0, this.state.selectedScale - 1)});
+    }
+
+    private handleRight = () => {
+        this.setState({selectedScale: Math.min(this.state.scales.length - 1, this.state.selectedScale + 1)});
+    }
+
+    private gamepad = (children: JSX.Element) =>
+        <Gamepad onLeft={this.handleLeft} onRight={this.handleRight}>{children}</Gamepad>
+
 }

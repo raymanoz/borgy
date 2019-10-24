@@ -8,11 +8,17 @@ import "./Trial.css";
 interface Props {
     trialName: string;
     scale: string;
+    selected: boolean;
 }
 
 interface State {
     scale: Scale;
     selectedIndex?: number;
+}
+
+interface Event {
+    scale: string;
+    intensity: number;
 }
 
 export class Trial extends Component<Props, State> {
@@ -41,8 +47,15 @@ export class Trial extends Component<Props, State> {
             .then((json) => this.setState({scale: json}));
     }
 
+    private event(intensity: Intensity): Event {
+        return {
+            scale: this.state.scale.name,
+            intensity: intensity.number,
+        };
+    }
+
     private logStateChange(intensity: Intensity) {
-        fetch(server.trial(this.trialName()), {method: "PATCH", body: `{ "scale" : ${this.state.scale}, "intensity": ${intensity.number} }`});
+        fetch(server.trial(this.trialName()), {method: "PATCH", body: JSON.stringify(this.event(intensity))});
     }
 
     private buttons(scale: Scale) {
@@ -79,6 +92,7 @@ export class Trial extends Component<Props, State> {
     private handleDown = () => this.handleButtonDown("B");
 
     private gamepad = (children: JSX.Element) =>
-        <Gamepad onUp={this.handleUp} onDown={this.handleDown}
-                 onButtonDown={this.handleButtonDown}>{children}</Gamepad>
+        (this.props.selected) ?
+            <Gamepad onUp={this.handleUp} onDown={this.handleDown} onButtonDown={this.handleButtonDown}>{children}</Gamepad> :
+            <div>{children}</div>
 }
