@@ -40,6 +40,11 @@ test {
 
 def webAppFiles = fileTree(dir: project.file('src/main/react/build')).include('**/*')
 
+task init_borgy(type: Exec) {
+    workingDir 'src/main/react'
+    commandLine(['yarn', 'install'])
+}
+
 task uiClean(type: Exec) {
     workingDir 'src/main/react'
     commandLine(['yarn', 'clean'])
@@ -66,4 +71,5 @@ jar {
 jar.dependsOn(['uiBuild'])
 
 clean.dependsOn(['uiClean'])
+
 
