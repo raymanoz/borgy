@@ -8,24 +8,25 @@ See https://en.wikipedia.org/wiki/Rating_of_perceived_exertion
 Requirements
 ============
 
+* OpenJDK 12
 * node 10.16.3
 * yarn
 
 Setup
 =====
 
-* in `src/main/react`
-    `yarn install`
+    ```./gradlew borgy_init```
     
 Run (in dev mode)
 ===
 
-* start backend
-    `Main.kt` (^-shift-r) or
-    Use "Start Server" in IDEA run menu
-* start frontend, in `src/main/react`
-    `yarn start`
+start backend
+
+    ```./gradlew start_back```
     
+start frontend
+
+    ```./gradlew start_front```
     
 notes
 =====

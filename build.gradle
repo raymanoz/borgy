@@ -45,14 +45,25 @@ task init_borgy(type: Exec) {
     commandLine(['yarn', 'install'])
 }
 
-task uiClean(type: Exec) {
+task ui_clean(type: Exec) {
     workingDir 'src/main/react'
     commandLine(['yarn', 'clean'])
 }
 
-task uiBuild(type: Exec) {
+task ui_build(type: Exec) {
     workingDir 'src/main/react'
     commandLine(['yarn', 'build'])
+}
+
+task start_back(type: JavaExec) {
+    main = 'com.raymanoz.borgy.MainKt'
+    systemProperty("config", "dev")
+    classpath = sourceSets.main.runtimeClasspath
+}
+
+task start_front(type: Exec) {
+    workingDir 'src/main/react'
+    commandLine(['yarn', 'start'])
 }
 
 jar {
@@ -68,8 +79,8 @@ jar {
     exclude 'META-INF/*.RSA', 'META-INF/*.SF', 'META-INF/*.DSA'
 }
 
-jar.dependsOn(['uiBuild'])
+jar.dependsOn(['ui_build'])
 
-clean.dependsOn(['uiClean'])
+clean.dependsOn(['ui_clean'])
 
 
