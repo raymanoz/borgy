@@ -25,9 +25,6 @@ export class Trial extends Component<Props, State> {
     constructor(props: Readonly<Props>) {
         super(props);
         this.handleButtonDown = this.handleButtonDown.bind(this);
-        this.handleUp = this.handleUp.bind(this);
-        this.handleDown = this.handleDown.bind(this);
-
     }
 
     public componentDidMount() {
@@ -59,7 +56,8 @@ export class Trial extends Component<Props, State> {
     }
 
     private buttons(scale: Scale) {
-        return scale ? <div className="container">
+        const maybeSelected = this.props.selected ? "selected" : "";
+        return scale ? <div className={"container trial-container " + maybeSelected}>
             <div className="row col justify-content-center"><h1 className="trial">{scale.description}</h1></div>
             {scale.intensities.map((intensity, index) =>
                 <div key={index} className="row align-items-center">
@@ -87,12 +85,8 @@ export class Trial extends Component<Props, State> {
         this.setState({selectedIndex});
     }
 
-    private handleUp = () => this.handleButtonDown("A");
-
-    private handleDown = () => this.handleButtonDown("B");
-
     private gamepad = (children: JSX.Element) =>
         (this.props.selected) ?
-            <Gamepad onUp={this.handleUp} onDown={this.handleDown} onButtonDown={this.handleButtonDown}>{children}</Gamepad> :
+            <Gamepad onButtonDown={this.handleButtonDown}>{children}</Gamepad> :
             <div>{children}</div>
 }

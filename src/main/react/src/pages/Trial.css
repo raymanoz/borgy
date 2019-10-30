@@ -1,3 +1,6 @@
+.trial-container.selected {
+    background-color: aquamarine;
+}
 li {
     list-style: none;
 }
