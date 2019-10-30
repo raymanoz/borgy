@@ -7,7 +7,7 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
-    entry: './src/index.ts',
+    entry: './src/index.tsx',
     devtool: 'source-map',
     module: {
         rules: [
