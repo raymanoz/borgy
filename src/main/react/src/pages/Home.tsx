@@ -65,7 +65,7 @@ export class Home extends Component<Props, State> {
         return <div className="container">
             <div className="row col justify-content-center"><h1>Borgy</h1></div>
             <span id="newTrial">
-                <div className="row col"><h2>New trial</h2></div>
+                <div className="row col"><h2>New trialasdf</h2></div>
                 <div className="row col">
                     <div className="input-group mb-3">
                       <div className="input-group-prepend">
@@ -74,21 +74,7 @@ export class Home extends Component<Props, State> {
                       <input type="text" className="form-control" placeholder="Name" aria-label="Name"
                              aria-describedby="basic-addon1" onChange={(event) => this.onTrialNameChanged(event.target.value)}/>
                     </div>
-
-                    {/*                    <div className="input-group mb-3">
-                        <div className="input-group-prepend">
-                            <label className="input-group-text" htmlFor="scale">Scale</label>
-                        </div>
-
-                        <select className="custom-select" id="scale" defaultValue="choose"
-                                onChange={(event) => this.onTrialScaleChanged(event.target.value)}>
-                            <option value="choose">Choose...</option>
-                            {this.state ? this.state.scales.map(Home.renderScaleRadio) : <span/>}
-                        </select>
-*/}
-
                     {this.state ? this.state.scales.map(this.renderScaleCheckbox) : <span/>}
-                    {/*</div>*/}
                 </div>
                 <Button onClick={this.startTrial}>Begin</Button>
             </span>

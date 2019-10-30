@@ -32,6 +32,7 @@ module.exports = {
     },
     output: {
         filename: 'borgy.js',
+        publicPath: "http://localhost:8080/",
         path: path.resolve(__dirname, 'build'),
     },
     plugins: [
@@ -43,5 +44,8 @@ module.exports = {
         new webpack.DefinePlugin({
             'process.env.REACT_APP_SERVER': "'http://localhost:9000'"
         })
-    ]
+    ],
+    devServer: {
+        historyApiFallback: true
+    }
 };
