@@ -1,23 +1,27 @@
-import {Action, applyMiddleware, combineReducers, createStore} from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
+import {applyMiddleware, combineReducers, createStore} from "redux";
+import {composeWithDevTools} from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
+import {Scales} from "../pages/Scale";
+import {newTrialReducer} from "./newtrial/reducer";
+import {NewTrialState} from "./newtrial/types";
+import {scalesReducer} from "./scales/reducers";
 
-interface NullState {
-    value: string;
+const rootReducer = combineReducers({
+    scales: scalesReducer,
+    newTrial: newTrialReducer,
+});
+
+export interface AppState {
+    scales: Scales;
+    newTrial: NewTrialState;
 }
-
-const rootReducer = (state: NullState, _: Action) => state;
-
-export type AppState = ReturnType<typeof rootReducer>;
 
 export default function configureStore() {
     const middlewares = [thunkMiddleware];
-    const middleWareEnhancer = applyMiddleware(...middlewares);
+    const middlewareEnhancer = applyMiddleware(...middlewares);
 
-    const store = createStore(
+    return createStore(
         rootReducer,
-        composeWithDevTools(middleWareEnhancer),
+        composeWithDevTools(middlewareEnhancer),
     );
-
-    return store;
 }
