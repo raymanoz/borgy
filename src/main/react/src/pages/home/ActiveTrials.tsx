@@ -1,49 +1,36 @@
-import {History} from "history";
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {NavLink} from "react-router-dom";
-import {AppState} from "../store";
-import {fetchScales} from "../store/scales/operations";
-import {server} from "../utils/server";
-import "./Home.css";
-import ActiveTrials from "./home/ActiveTrials";
-import NewTrial from "./home/NewTrial";
-import {Trials} from "./Scale";
+import {Action} from "redux";
+import {AppState} from "../../store";
+import {refreshTrials} from "../../store/activetrials/operations";
+import {server} from "../../utils/server";
+import {Trials} from "../Scale";
 
 interface Props {
-    history: History;
-}
+    refreshTrials: () => Action;
 
-interface State {
     trials: Trials;
 }
 
-class Home extends Component<Props, State> {
+class ActiveTrials extends Component<Props> {
     constructor(props: Readonly<Props>) {
         super(props);
-        this.state = {
-            trials: [],
-        };
         this.renderActiveTrial = this.renderActiveTrial.bind(this);
         this.completeTrial = this.completeTrial.bind(this);
     }
 
     public componentDidMount() {
-        this.refreshTrials();
+        this.props.refreshTrials();
     }
 
     public render() {
-        return <div className="container">
-            <div className="row col justify-content-center"><h1>Borgy</h1></div>
-            <NewTrial history={this.props.history}/>
-            <ActiveTrials/>
-        </div>;
-    }
-
-    private refreshTrials() {
-        fetch(server.trials)
-            .then((result) => result.json())
-            .then((t) => this.setState({trials: t}));
+        return (
+            <span id="activeTrials">
+                <div className="row col"><h2>Active Trials</h2></div>
+                {this.props.trials.map(this.renderActiveTrial)}
+            </span>
+        );
     }
 
     private renderActiveTrial(trial: string, idx: number) {
@@ -55,15 +42,15 @@ class Home extends Component<Props, State> {
 
     private completeTrial(trialName: string) {
         fetch(server.trial(trialName), {method: "DELETE", credentials: "same-origin"})
-            .then((_) => this.refreshTrials());
+            .then(() => this.props.refreshTrials());
     }
 }
 
 const mapStateToProps = (state: AppState) => ({
-    scales: state.scales,
+    trials: state.activeTrials,
 });
 
 export default connect(
     mapStateToProps,
-    { fetchScales },
-)(Home);
+    { refreshTrials },
+)(ActiveTrials);
