@@ -20,20 +20,24 @@ export function newTrialReducer(
     action: NewTrialActionTypes,
 ): NewTrialState {
     switch (action.type) {
-        case INCLUDE_IN_TRIAL:
+        case INCLUDE_IN_TRIAL: {
+            const includeAction = action as IncludeInTrialAction;
             return {
                 ...state,
-                scales: R.append((action as IncludeInTrialAction).scale, state.scales),
+                scales: R.uniq(R.append(includeAction.scale, state.scales)),
             };
+        }
         case EXCLUDE_FROM_TRIAL:
+            const excludeAction = action as ExcludeFromTrialAction;
             return {
                 ...state,
-                scales: R.filter((scale: Scale) => scale !== (action as ExcludeFromTrialAction).scale, state.scales),
+                scales: R.filter((scale: Scale) => scale !== excludeAction.scale, state.scales),
             };
         case UPDATE_TRIAL_NAME:
+            const updateAction = action as UpdateTrialNameAction;
             return {
                 ...state,
-                trialName: (action as UpdateTrialNameAction).name,
+                trialName: updateAction.name,
             };
         default:
             return state;

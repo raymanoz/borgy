@@ -10,9 +10,10 @@ import org.http4k.server.asServer
 
 fun main() {
     val config = load(Environment.ENV)
-    val trials = FileTrialsRepository(config.activeTrials, config.completeTrials)
-    val scales = FileScalesRepository(config.scalesFile)
-    App(config, TrialsEndpoints(trials), ScalesEndpoints(scales)).asServer(SunHttp(config.port)).start()
+    val trialsRepository = FileTrialsRepository(config.activeTrials, config.completeTrials)
+    val scalesRepository = FileScalesRepository(config.scalesFile)
+    val scales = scalesRepository.scales()
+    App(config, TrialsEndpoints(trialsRepository, scales), ScalesEndpoints(scalesRepository)).asServer(SunHttp(config.port)).start()
 
     println("Borgy (${config.javaClass.simpleName}) is running: http://localhost:${config.port}/")
 }

@@ -14,7 +14,9 @@ class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : T
     override fun newTrial(name: String, scales: List<String>): Trial {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"))
         val timestampedName = "${name}_${timestamp}"
-        val trial = Trial(timestampedName, scales.associateWith { scale -> emptyList<Entry>() })
+        val trial = Trial(timestampedName,
+                scales.map{ scale -> Observation(scale, emptyList(), null)}
+        )
 
         trialFile(timestampedName).apply {
             createNewFile()
@@ -34,14 +36,10 @@ class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : T
         }
     }
 
-    override fun put(name: String, state: State): Trial? =
-            withTrialFile(name) {
-                val data = it.read<Trial>()
-                data.entries[state.scale]?.let { entries ->
-                    val newData = data.copy(entries = (data.entries + Pair(state.scale, entries + Entry(Instant.now(), state.intensity))))
-                    it.write(newData)
-                    newData
-                }
+    override fun put(trial: Trial): Trial =
+            withTrialFile(trial.name) {
+                it.write(trial)
+                trial
             }
 
     private fun trialFile(name: String): File = File(activeTrials(), "$name.json")

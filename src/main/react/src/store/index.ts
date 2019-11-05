@@ -7,17 +7,21 @@ import {newTrialReducer} from "./newtrial/reducer";
 import {NewTrialState} from "./newtrial/types";
 import {scalesReducer} from "./scales/reducers";
 import {ScalesState} from "./scales/types";
+import {trialReducer} from "./trial/reducers";
+import {TrialState} from "./trial/types";
 
 const rootReducer = combineReducers({
     scales: scalesReducer,
     newTrial: newTrialReducer,
     activeTrials: activeTrialsReducer,
+    trial: trialReducer,
 });
 
 export interface AppState {
     scales: ScalesState;
     newTrial: NewTrialState;
     activeTrials: ActiveTrialsState;
+    trial: TrialState;
 }
 
 export default function configureStore() {

@@ -1,92 +1,68 @@
 import React, {Component} from "react";
 import Gamepad, {Button as GPButton} from "react-gamepad";
-import Button from "../components/Button";
-import {server} from "../utils/server";
-import {Intensity, Scale} from "./Scale";
+import {connect} from "react-redux";
+import {RouteComponentProps} from "react-router";
+import {AppState} from "../store";
+import {fetchTrial, selectNextObservation, selectPreviousObservation} from "../store/trial/operations";
+import {Trial as TrialData} from "../store/trial/types";
 import "./Trial.css";
+import Observation from "./trial/Observation";
 
-interface Props {
-    trialName: string;
-    scale: string;
-    selected: boolean;
+interface TrialProps extends RouteComponentProps<{ name: string }> {
+    fetchTrial: (name: string) => void;
+    selectPreviousObservation: (name: string) => void;
+    selectNextObservation: (name: string) => void;
+
+    trial: TrialData;
 }
 
-interface State {
-    scale: Scale;
-    selectedIndex?: number;
-}
-
-interface Event {
-    scale: string;
-    intensity: number;
-}
-
-export class Trial extends Component<Props, State> {
-    constructor(props: Readonly<Props>) {
+class Trial extends Component<TrialProps> {
+    constructor(props: Readonly<TrialProps>) {
         super(props);
+        this.state = {
+            selectedScale: 0,
+        };
         this.handleButtonDown = this.handleButtonDown.bind(this);
     }
 
     public componentDidMount() {
-        this.fetchScale(this.props.scale);
+        this.props.fetchTrial(this.trialName());
     }
 
-    public render() {
-        const buttons: JSX.Element = this.state ? this.buttons(this.state.scale) : <span/>;
-        return this.gamepad(buttons);
-    }
+    public render = () =>
+        this.gamepad(<div className={"container"}>
+            <div className={"row"}>
+                {this.props.trial.observations.map((observation, idx) => {
+                    const selected = this.props.trial.selectedObservation === idx;
+                    return <div key={idx} className={"col"}>
+                        <Observation scale={observation.scale} selected={selected}
+                                     selectedIntensity={observation.selectedIntensity}
+                                     trialName={this.trialName()}/>
+                    </div>;
+                })}
+            </div>
+        </div>)
 
-    private trialName = () => this.props.trialName;
-
-    private fetchScale(name: string) {
-        fetch(server.scale(name))
-            .then((result) => result.json())
-            .then((json) => this.setState({scale: json}));
-    }
-
-    private event(intensity: Intensity): Event {
-        return {
-            scale: this.state.scale.name,
-            intensity: intensity.number,
-        };
-    }
-
-    private logStateChange(intensity: Intensity) {
-        fetch(server.trial(this.trialName()), {method: "PATCH", body: JSON.stringify(this.event(intensity))});
-    }
-
-    private buttons(scale: Scale) {
-        const maybeSelected = this.props.selected ? "selected" : "";
-        return scale ? <div className={"container trial-container " + maybeSelected}>
-            <div className="row col justify-content-center"><h1 className="trial">{scale.description}</h1></div>
-            {scale.intensities.map((intensity, index) =>
-                <div key={index} className="row align-items-center">
-                    <div className="col"/>
-                    <Button intensity={intensity.number}
-                            selected={this.state.selectedIndex !== undefined ? this.state.selectedIndex === index : false}/>
-                    <div className="col">
-                        <div className={"borg-button-label"}>{intensity.label}</div>
-                    </div>
-                    <div className="col"/>
-                </div>)
-            }
-        </div> : <div/>;
-    }
+    private trialName = () => this.props.match.params.name;
 
     private handleButtonDown(buttonName: GPButton) {
-        const selectedIndex = this.state.selectedIndex === undefined ? 0 :
-            buttonName === "A" ? Math.max(0, this.state.selectedIndex - 1) :
-                buttonName === "B" ? Math.min(this.state.scale.intensities.length - 1, (this.state.selectedIndex + 1)) :
-                    this.state.selectedIndex;
-
-        if (selectedIndex !== undefined && this.state.selectedIndex !== selectedIndex) {
-            this.logStateChange(this.state.scale.intensities[selectedIndex]);
+        if (buttonName === "Y") {
+            this.props.selectPreviousObservation(this.trialName());
+        } else if (buttonName === "X") {
+            this.props.selectNextObservation(this.trialName());
         }
-        this.setState({selectedIndex});
     }
 
     private gamepad = (children: JSX.Element) =>
-        (this.props.selected) ?
-            <Gamepad onButtonDown={this.handleButtonDown}>{children}</Gamepad> :
-            <div>{children}</div>
+        <Gamepad onButtonDown={this.handleButtonDown}>{children}</Gamepad>
+
 }
+
+const mapStateToProps = (state: AppState) => ({
+    trial: state.trial,
+});
+
+export default connect(
+    mapStateToProps,
+    {fetchTrial, selectPreviousObservation, selectNextObservation},
+)(Trial);

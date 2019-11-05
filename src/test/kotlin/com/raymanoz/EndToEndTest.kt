@@ -20,9 +20,9 @@ import org.junit.jupiter.api.Test
 class EndToEndTest {
     private val client = OkHttp()
     private val config = StubConfig()
-    val trials = InMemoryTrialsRepository()
-    val scales = InMemoryScalesRepository()
-    private val server = App(config, TrialsEndpoints(trials), ScalesEndpoints(scales)).asServer(SunHttp(config.port))
+    private val trialsRepository = InMemoryTrialsRepository()
+    private val scalesRepository = InMemoryScalesRepository()
+    private val server = App(config, TrialsEndpoints(trialsRepository, emptyList()), ScalesEndpoints(scalesRepository)).asServer(SunHttp(config.port))
 
     @BeforeEach
     fun setup() {

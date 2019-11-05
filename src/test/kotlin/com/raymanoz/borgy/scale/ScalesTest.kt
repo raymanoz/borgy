@@ -24,7 +24,7 @@ class ScalesTest {
             ))
     )
 
-    private val client = App(StubConfig(), TrialsEndpoints(InMemoryTrialsRepository()), ScalesEndpoints(InMemoryScalesRepository(scales)))
+    private val client = App(StubConfig(), TrialsEndpoints(InMemoryTrialsRepository(), emptyList()), ScalesEndpoints(InMemoryScalesRepository(scales)))
 
     @Test
     fun `can list all scales`() {

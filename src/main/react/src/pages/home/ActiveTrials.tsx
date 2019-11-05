@@ -1,14 +1,13 @@
 import React, {Component} from "react";
 import {connect} from "react-redux";
 import {NavLink} from "react-router-dom";
-import {Action} from "redux";
 import {AppState} from "../../store";
 import {refreshTrials} from "../../store/activetrials/operations";
 import {server} from "../../utils/server";
 import {Trials} from "../Scale";
 
 interface Props {
-    refreshTrials: () => Action;
+    refreshTrials: () => void;
 
     trials: Trials;
 }

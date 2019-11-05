@@ -2,18 +2,17 @@ import {History} from "history";
 import React, {Component} from "react";
 import Button from "react-bootstrap/Button";
 import {connect} from "react-redux";
-import {Action} from "redux";
 import {AppState} from "../../store";
 import {excludeFromTrial, includeInTrial, updateTrialName} from "../../store/newtrial/operations";
 import {fetchScales} from "../../store/scales/operations";
 import {server} from "../../utils/server";
-import {Scale, Scales, Trials} from "../Scale";
+import {Scale, Scales} from "../Scale";
 
 interface Props {
-    fetchScales: () => Action;
-    includeInTrial: (scale: Scale) => Action;
-    excludeFromTrial: (scale: Scale) => Action;
-    updateTrialName: (name: string) => Action;
+    fetchScales: () => void;
+    includeInTrial: (scale: Scale) => void;
+    excludeFromTrial: (scale: Scale) => void;
+    updateTrialName: (name: string) => void;
 
     history: History;
     scales: Scales;
