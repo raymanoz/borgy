@@ -15,7 +15,7 @@ class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : T
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"))
         val timestampedName = "${name}_${timestamp}"
         val trial = Trial(timestampedName,
-                scales.map{ scale -> Observation(scale, emptyList(), null)}
+                scales.map{ scale -> Observation(scale, emptyList())}
         )
 
         trialFile(timestampedName).apply {

@@ -23,7 +23,7 @@ data class Trial(val name: String, val observations: List<Observation>, val sele
     )
 }
 
-data class Observation(val scaleName: String, val events: List<Event>, val selectedIntensity: Int?)
+data class Observation(val scaleName: String, val events: List<Event>)
 data class Event(val time: Instant, val intensity: String)
 
 data class UiEvent(val scale: String, val intensity: String)

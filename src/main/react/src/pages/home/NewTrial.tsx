@@ -46,7 +46,7 @@ class NewTrial extends Component<Props> {
                     </div>
                     {this.props.scales.map((v) => this.renderScaleCheckbox(v))}
                 </div>
-                <Button onClick={this.startTrial}>Begin</Button>
+                <Button onClick={this.startTrial} disabled={this.props.trialName === "" || this.props.trialScales.length === 0}>Begin</Button>
             </span>);
     }
 

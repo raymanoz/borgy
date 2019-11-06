@@ -8,7 +8,7 @@ See https://en.wikipedia.org/wiki/Rating_of_perceived_exertion
 Requirements
 ============
 
-* OpenJDK 12
+* OpenJDK 13
 * node 10.16.3
 * yarn
 
