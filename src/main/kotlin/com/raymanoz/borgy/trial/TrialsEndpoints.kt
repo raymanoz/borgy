@@ -1,5 +1,11 @@
 package com.raymanoz.borgy.trial
 
+import com.natpryce.Failure
+import com.natpryce.Result
+import com.natpryce.Success
+import com.natpryce.flatMap
+import com.natpryce.get
+import com.natpryce.map
 import com.raymanoz.borgy.NewTrial
 import com.raymanoz.borgy.scale.Scale
 import org.http4k.core.Body
@@ -10,7 +16,6 @@ import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
 import org.http4k.core.with
-import org.http4k.format.Jackson
 import org.http4k.format.Jackson.auto
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
@@ -50,57 +55,46 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
     }
 
     private fun trial(): HttpHandler = { req ->
-        req.path("name")?.let { name ->
-            trials.get(name)?.let { trial ->
-                Response(Status.OK).with(UiTrial.lens of UiTrial.from(trial,scales))
-            } ?: Response(Status.NOT_FOUND).body("No trial found for '$name'")
-        } ?: Response(Status.BAD_REQUEST).body("Path parameter 'name' missing")
+        trialFromPathParam(req){ trial ->
+            Response(Status.OK).with(UiTrial.lens of UiTrial.from(trial, scales))
+        }
     }
 
     private fun selectPreviousObservation(): HttpHandler = { req ->
-        req.path("name")?.let { name ->
-            trials.get(name)?.let { trial ->
-                val newTrial = trial.selectPrevious()
-                trials.put(newTrial)
-                Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
-            } ?: Response(Status.NOT_FOUND).body("No trial found for '$name'")
-        } ?: Response(Status.BAD_REQUEST).body("Path parameter 'name' missing")
+        trialFromPathParam(req) { trial ->
+            val newTrial = trial.selectPrevious()
+            trials.put(newTrial)
+            Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
+        }
     }
 
     private fun selectNextObservation(): HttpHandler = { req ->
-        req.path("name")?.let { name ->
-            trials.get(name)?.let { trial ->
-                val newTrial = trial.selectNext()
-                trials.put(newTrial)
-                Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
-            } ?: Response(Status.NOT_FOUND).body("No trial found for '$name'")
-        } ?: Response(Status.BAD_REQUEST).body("Path parameter 'name' missing")
+        trialFromPathParam(req) { trial ->
+            val newTrial = trial.selectNext()
+            trials.put(newTrial)
+            Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
+        }
     }
 
     private fun newTrial(): HttpHandler = { req ->
-        val lens = Body.auto<NewTrial>().toLens()
-        val newTrial = lens(req)
-
-        val (name) = trials.newTrial(newTrial.name, newTrial.scales)
-
+        val newTrial = (Body.auto<NewTrial>().toLens())(req)
+        val name = trials.newTrial(newTrial.name, newTrial.scales).name
         Response(Status.OK).body("""{ "url" : "/trial/$name" } """)
     }
 
     private fun logEvent(): HttpHandler = { req ->
-        req.path("name")?.let { name ->
+        trialFromPathParam(req) { trial ->
             val elementLens = Body.auto<UiEvent>().toLens()
-            trials.get(name)?.let { trial ->
-                val uiEvent = elementLens.extract(req)
-                val newObservations = trial.observations.map { observation ->
-                    if (observation.scaleName == uiEvent.scale)
-                        observation.copy(events = observation.events + Event(Instant.now(), uiEvent.intensity))
-                    else
-                        observation
-                }
-                val newTrial = trials.put(trial.copy(observations = newObservations))
-                Response(Status.OK).body(Jackson.asJsonString(UiTrial.from(newTrial, scales)))
-            } ?: Response(Status.NOT_FOUND).body("No trial found for '$name'")
-        } ?: Response(Status.BAD_REQUEST).body("Path parameter 'name' missing")
+            val uiEvent = elementLens.extract(req)
+            val newObservations = trial.observations.map { observation ->
+                if (observation.scaleName == uiEvent.scale)
+                    observation.copy(events = observation.events + Event(Instant.now(), uiEvent.intensity))
+                else
+                    observation
+            }
+            val newTrial = trials.put(trial.copy(observations = newObservations))
+            Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
+        }
     }
 
     override fun invoke(request: Request): Response = handler(request)
@@ -111,4 +105,15 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
 
     override fun withFilter(new: Filter): RoutingHttpHandler = handler.withFilter(new)
 
+    private fun <N, F> maybeToEither(value: N?, failure: F): Result<N, F> =
+            value?.let { Success(it) } ?: Failure(failure)
+
+    private fun namePathParam(req: Request) = maybeToEither(req.path("name"), Response(Status.BAD_REQUEST).body("Path parameter 'name' missing"))
+
+    private fun trial(name: String) = maybeToEither(trials.get(name), Response(Status.NOT_FOUND).body("No trial found for '$name'"))
+
+    private fun trialFromPathParam(req: Request, fn: (Trial) -> Response): Response =
+            namePathParam(req).flatMap { name ->
+                trial(name).map { trial -> fn(trial) }
+            }.get()
 }

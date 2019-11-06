@@ -1,6 +1,7 @@
 import * as R from "ramda";
 import {Scale} from "../../pages/Scale";
 import {
+    CLEAR_NEW_TRIAL,
     EXCLUDE_FROM_TRIAL,
     ExcludeFromTrialAction,
     INCLUDE_IN_TRIAL,
@@ -31,7 +32,7 @@ export function newTrialReducer(
             const excludeAction = action as ExcludeFromTrialAction;
             return {
                 ...state,
-                scales: R.filter((scale: Scale) => scale !== excludeAction.scale, state.scales),
+                scales: R.filter((scale: Scale) => scale.name !== excludeAction.scale.name, state.scales),
             };
         case UPDATE_TRIAL_NAME:
             const updateAction = action as UpdateTrialNameAction;
@@ -39,6 +40,8 @@ export function newTrialReducer(
                 ...state,
                 trialName: updateAction.name,
             };
+        case CLEAR_NEW_TRIAL:
+            return initialState;
         default:
             return state;
     }

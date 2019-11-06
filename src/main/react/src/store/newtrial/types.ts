@@ -5,6 +5,11 @@ export interface NewTrialState {
     scales: Scales;
 }
 
+export interface StartTrial {
+    name: string;
+    scales: string[];
+}
+
 export const INCLUDE_IN_TRIAL = "INCLUDE_IN_TRIAL";
 
 export interface IncludeInTrialAction {
@@ -26,4 +31,10 @@ export interface UpdateTrialNameAction {
     name: string;
 }
 
-export type NewTrialActionTypes = IncludeInTrialAction | ExcludeFromTrialAction | UpdateTrialNameAction;
+export const CLEAR_NEW_TRIAL = "CLEAR_NEW_TRIAL";
+
+export interface ClearNewTrialAction {
+    type: string;
+}
+
+export type NewTrialActionTypes = IncludeInTrialAction | ExcludeFromTrialAction | UpdateTrialNameAction | ClearNewTrialAction;

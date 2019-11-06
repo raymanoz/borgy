@@ -3,9 +3,9 @@ import React, {Component} from "react";
 import Button from "react-bootstrap/Button";
 import {connect} from "react-redux";
 import {AppState} from "../../store";
-import {excludeFromTrial, includeInTrial, updateTrialName} from "../../store/newtrial/operations";
+import {excludeFromTrial, includeInTrial, startTrial, updateTrialName} from "../../store/newtrial/operations";
+import {StartTrial} from "../../store/newtrial/types";
 import {fetchScales} from "../../store/scales/operations";
-import {server} from "../../utils/server";
 import {Scale, Scales} from "../Scale";
 
 interface Props {
@@ -13,16 +13,12 @@ interface Props {
     includeInTrial: (scale: Scale) => void;
     excludeFromTrial: (scale: Scale) => void;
     updateTrialName: (name: string) => void;
+    startTrial: (trial: StartTrial, history: History) => void;
 
     history: History;
     scales: Scales;
     trialName: string;
     trialScales: Scales;
-}
-
-interface StartTrial {
-    name: string;
-    scales: string[];
 }
 
 class NewTrial extends Component<Props> {
@@ -55,19 +51,12 @@ class NewTrial extends Component<Props> {
     }
 
     private startTrial() {
-        fetch(server.trials, {method: "POST", body: JSON.stringify(this.startTrialJsonFromState())})
-        // TODO : Handle failure response
-            .then((result) => result.json())
-            .then((json) => this.props.history.push(json.url));
-
-    }
-
-    private startTrialJsonFromState(): StartTrial {
-        return {
+        this.props.startTrial({
             name: this.props.trialName,
             scales: this.props.trialScales.map((s) => s.name),
-        };
+        }, this.props.history);
     }
+
     private onTrialNameChanged(value: string) {
         this.props.updateTrialName(value);
     }
@@ -83,7 +72,7 @@ class NewTrial extends Component<Props> {
     private handleScaleSelectionChange(event: React.ChangeEvent<HTMLInputElement>) {
         const changingScale = this.props.scales.find((scale) => scale.name === event.target.id);
         if (changingScale) {
-            if (this.props.trialScales.includes(changingScale)) {
+            if (this.props.trialScales.find((scale) => scale.name === changingScale.name)) {
                 this.props.excludeFromTrial(changingScale);
             } else {
                 this.props.includeInTrial(changingScale);
@@ -100,5 +89,5 @@ const mapStateToProps = (state: AppState) => ({
 
 export default connect(
     mapStateToProps,
-    { fetchScales, includeInTrial, excludeFromTrial, updateTrialName },
+    {fetchScales, includeInTrial, excludeFromTrial, updateTrialName, startTrial},
 )(NewTrial);
