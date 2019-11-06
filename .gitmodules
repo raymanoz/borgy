@@ -1,0 +1,6 @@
+[submodule "src/main/react/lotte-css"]
+	path = src/main/react/lotte-css
+	url = https://github.com/charlottefranklin/lotte-css
+[submodule "src/main/react/src/lotte-css"]
+	path = src/main/react/src/lotte-css
+	url = https://github.com/charlottefranklin/lotte-css
