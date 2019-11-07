@@ -1,6 +1,7 @@
-package com.raymanoz.borgy
+package com.raymanoz.util
 
 import com.natpryce.Result
+import com.raymanoz.util.maybeToEither
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status

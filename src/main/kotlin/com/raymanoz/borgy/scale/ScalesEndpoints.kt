@@ -3,9 +3,9 @@ package com.raymanoz.borgy.scale
 import com.natpryce.flatMap
 import com.natpryce.get
 import com.natpryce.map
-import com.raymanoz.borgy.maybeToEither
-import com.raymanoz.borgy.pathResult
+import com.raymanoz.util.pathResult
 import com.raymanoz.borgy.scale.Scale.Companion.scalesLens
+import com.raymanoz.util.maybeToEither
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method

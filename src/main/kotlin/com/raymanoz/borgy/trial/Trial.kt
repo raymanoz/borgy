@@ -9,6 +9,8 @@ import java.time.Instant
 import kotlin.math.min
 import kotlin.math.max
 
+data class NewTrial(val name: String, val scales: List<String>)
+
 data class Trial(val name: String, val observations: List<Observation>, val selectedObservation: Int = 0) {
     companion object {
         val lens: BiDiBodyLens<Trial> = Body.auto<Trial>().toLens()

@@ -1,4 +1,4 @@
-package com.raymanoz.borgy
+package com.raymanoz.util
 
 import com.natpryce.Failure
 import com.natpryce.Result
