@@ -45,7 +45,7 @@ task pull_submodules(type: Exec) {
    commandLine(['git', 'submodule', 'update', '--init', '--recursive'])
 }
 
-task init_borgy(type: Exec) {
+task init_borgy(type: Exec, dependsOn: ['pull_submodules']) {
     workingDir 'src/main/react'
     commandLine(['yarn', 'install'])
 }
