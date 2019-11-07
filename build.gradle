@@ -41,6 +41,10 @@ test {
 
 def webAppFiles = fileTree(dir: project.file('src/main/react/build')).include('**/*')
 
+task pull_submodules(type: Exec) {
+   commandLine(['git', 'submodule', 'update', '--init', '--recursive'])
+}
+
 task init_borgy(type: Exec) {
     workingDir 'src/main/react'
     commandLine(['yarn', 'install'])
@@ -67,9 +71,16 @@ task start_front(type: Exec) {
     commandLine(['yarn', 'start'])
 }
 
+task start_jar(dependsOn: jar) {
+    javaexec {
+        main = "-jar";
+        args = ["build/libs/borgy.jar"]
+    }
+}
+
 jar {
     manifest {
-        attributes 'Main-Class': 'com.raymanoz.MainKt'
+        attributes 'Main-Class': 'com.raymanoz.borgy.MainKt'
     }
     from(webAppFiles) {
         into 'public'

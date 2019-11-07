@@ -25,14 +25,14 @@ module.exports = {
                 use: ['style-loader', 'css-loader', 'sass-loader'],
             },
             {
-                test: /\.(png|jpe?g|gif|ico|ttf|svg|woff2|woff|eot)$/i,
+                test: /\.(eot|gif|ico|jpe?g|png|svg|ttf|woff2?)$/i,
                 use: 'file-loader'
             },
         ],
     },
     output: {
         filename: 'borgy.js',
-        publicPath: "http://localhost:8080/",
+        publicPath: "/",
         path: path.resolve(__dirname, 'build'),
     },
     plugins: [

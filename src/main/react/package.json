@@ -16,12 +16,6 @@
     "redux-thunk": "^2.3.0",
     "ts.data.json": "^0.2.0"
   },
-  "scripts": {
-    "start": "webpack-dev-server --open",
-    "devbuild": "webpack --mode development",
-    "build": "webpack --mode production",
-    "clean": "rm -rf build"
-  },
   "eslintConfig": {
     "extends": "react-app"
   },
@@ -68,5 +62,11 @@
   },
   "resolutions": {
     "@types/react": "^16.9.11"
+  },
+  "scripts": {
+    "start": "webpack-dev-server --open",
+    "devbuild": "webpack --mode development",
+    "build": "webpack --mode production",
+    "clean": "rm -rf build"
   }
 }

@@ -1,12 +1,11 @@
 package com.raymanoz.borgy.trial
 
-import com.natpryce.Failure
-import com.natpryce.Result
-import com.natpryce.Success
 import com.natpryce.flatMap
 import com.natpryce.get
 import com.natpryce.map
 import com.raymanoz.borgy.NewTrial
+import com.raymanoz.borgy.maybeToEither
+import com.raymanoz.borgy.pathResult
 import com.raymanoz.borgy.scale.Scale
 import org.http4k.core.Body
 import org.http4k.core.Filter
@@ -19,7 +18,6 @@ import org.http4k.core.with
 import org.http4k.format.Jackson.auto
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
-import org.http4k.routing.path
 import org.http4k.routing.routes
 import java.time.Instant
 
@@ -44,10 +42,10 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
     )
 
     private fun completeTrial(): HttpHandler = { req ->
-        req.path("name")?.let { name ->
+        req.pathResult("name").map { name ->
             trials.complete(name)
             Response(Status.OK)
-        } ?: Response(Status.BAD_REQUEST).body("Path parameter 'name' missing")
+        }.get()
     }
 
     private fun trials(): HttpHandler = {
@@ -55,7 +53,7 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
     }
 
     private fun trial(): HttpHandler = { req ->
-        trialFromPathParam(req){ trial ->
+        trialFromPathParam(req) { trial ->
             Response(Status.OK).with(UiTrial.lens of UiTrial.from(trial, scales))
         }
     }
@@ -105,15 +103,11 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
 
     override fun withFilter(new: Filter): RoutingHttpHandler = handler.withFilter(new)
 
-    private fun <N, F> maybeToEither(value: N?, failure: F): Result<N, F> =
-            value?.let { Success(it) } ?: Failure(failure)
-
-    private fun namePathParam(req: Request) = maybeToEither(req.path("name"), Response(Status.BAD_REQUEST).body("Path parameter 'name' missing"))
-
-    private fun trial(name: String) = maybeToEither(trials.get(name), Response(Status.NOT_FOUND).body("No trial found for '$name'"))
+    private fun trial(name: String) =
+            trials.get(name).maybeToEither(Response(Status.NOT_FOUND).body("No trial found for '$name'"))
 
     private fun trialFromPathParam(req: Request, fn: (Trial) -> Response): Response =
-            namePathParam(req).flatMap { name ->
+            req.pathResult("name").flatMap { name ->
                 trial(name).map { trial -> fn(trial) }
             }.get()
 }

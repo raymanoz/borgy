@@ -1,15 +1,20 @@
 package com.raymanoz.borgy.scale
 
+import com.natpryce.flatMap
+import com.natpryce.get
+import com.natpryce.map
+import com.raymanoz.borgy.maybeToEither
+import com.raymanoz.borgy.pathResult
+import com.raymanoz.borgy.scale.Scale.Companion.scalesLens
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method
 import org.http4k.core.Request
 import org.http4k.core.Response
 import org.http4k.core.Status
-import org.http4k.format.Jackson
+import org.http4k.core.with
 import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
-import org.http4k.routing.path
 import org.http4k.routing.routes
 
 class ScalesEndpoints(private val scales: ScalesRepository) : RoutingHttpHandler {
@@ -25,15 +30,19 @@ class ScalesEndpoints(private val scales: ScalesRepository) : RoutingHttpHandler
     )
 
     private fun scale(): HttpHandler = { req ->
-        req.path("name")?.let { name ->
-            scales.get(name)?.let { scale ->
-                Response(Status.OK).body(Jackson.asJsonString(scale))
-            } ?: Response(Status.NOT_FOUND).body("No scale found for '$name'")
-        } ?: Response(Status.BAD_REQUEST).body("Path parameter 'name' missing")
+        req.pathResult("name").flatMap { name ->
+            scale(name).map { scale ->
+                Response(Status.OK).with(Scale.lens of scale)
+            }
+        }.get()
     }
 
+    private fun scale(name: String) =
+            scales.get(name).maybeToEither(Response(Status.NOT_FOUND).body("No scale found for '$name'"))
+
+
     private fun scales(): HttpHandler = { _ ->
-        Response(Status.OK).body(Jackson.asJsonString(scales.scales()))
+        Response(Status.OK).with(scalesLens of scales.scales())
     }
 
     override fun invoke(request: Request): Response = handler(request)
