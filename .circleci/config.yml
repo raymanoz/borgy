@@ -19,8 +19,8 @@ jobs:
       - run:
           name: get node
           command: |
-            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-            nvm install 10.16.3
+            curl -sL https://deb.nodesource.com/setup_10.x | bash
+            apt-get install -y nodejs
       - run:
           name: get yarn
           command: curl -o- -L https://yarnpkg.com/install.sh | bash
