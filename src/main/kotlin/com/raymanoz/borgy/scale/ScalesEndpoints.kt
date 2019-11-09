@@ -1,11 +1,11 @@
 package com.raymanoz.borgy.scale
 
+import com.natpryce.asResultOr
 import com.natpryce.flatMap
 import com.natpryce.get
 import com.natpryce.map
 import com.raymanoz.util.pathResult
 import com.raymanoz.borgy.scale.Scale.Companion.scalesLens
-import com.raymanoz.util.nullToResult
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
 import org.http4k.core.Method
@@ -38,7 +38,7 @@ class ScalesEndpoints(private val scales: ScalesRepository) : RoutingHttpHandler
     }
 
     private fun scale(name: String) =
-            scales.get(name).nullToResult(Response(Status.NOT_FOUND).body("No scale found for '$name'"))
+            scales.get(name).asResultOr { Response(Status.NOT_FOUND).body("No scale found for '$name'") }
 
 
     private fun scales(): HttpHandler = { _ ->

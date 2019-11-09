@@ -1,11 +1,11 @@
 package com.raymanoz.borgy.trial
 
+import com.natpryce.asResultOr
 import com.natpryce.flatMap
 import com.natpryce.get
 import com.natpryce.map
 import com.raymanoz.util.pathResult
 import com.raymanoz.borgy.scale.Scale
-import com.raymanoz.util.nullToResult
 import org.http4k.core.Body
 import org.http4k.core.Filter
 import org.http4k.core.HttpHandler
@@ -103,7 +103,7 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
     override fun withFilter(new: Filter): RoutingHttpHandler = handler.withFilter(new)
 
     private fun trial(name: String) =
-            trials.get(name).nullToResult(Response(Status.NOT_FOUND).body("No trial found for '$name'"))
+            trials.get(name).asResultOr { Response(Status.NOT_FOUND).body("No trial found for '$name'") }
 
     private fun trialFromPathParam(req: Request, fn: (Trial) -> Response): Response =
             req.pathResult("name").flatMap { name ->
