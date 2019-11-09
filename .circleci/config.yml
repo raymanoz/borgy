@@ -12,10 +12,13 @@ jobs:
           key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
-      - restore_cache:
-          name: Restore Yarn Package Cache
-          keys:
-            - yarn-packages-{{ checksum "yarn.lock" }}
+#      - restore_cache:
+#          name: Restore Yarn Package Cache
+#          keys:
+#            - yarn-packages-{{ checksum "yarn.lock" }}
+      - run:
+          name: get yarn
+          command: curl -o- -L https://yarnpkg.com/install.sh | bash
       - run:
           name: Install Dependencies
           command: yarn install --frozen-lockfile
