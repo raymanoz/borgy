@@ -17,6 +17,11 @@ jobs:
 #          keys:
 #            - yarn-packages-{{ checksum "yarn.lock" }}
       - run:
+          name: get node
+          command: |
+            curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
+            nvm install 10.16.3
+      - run:
           name: get yarn
           command: curl -o- -L https://yarnpkg.com/install.sh | bash
       - run:
