@@ -5,7 +5,7 @@ import {Provider} from "react-redux";
 import {App} from "./App";
 import "./favicon.ico";
 import "./index.css";
-import "./lotte-css/stylesheets/lotte.scss";
+import "./lotte-css/stylesheets/lotte-css.scss";
 import configureStore from "./store";
 
 const store = configureStore();

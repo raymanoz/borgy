@@ -35,15 +35,11 @@ class NewTrial extends Component<Props> {
 
     public render() {
         return (<span id="newTrial">
-                <div className="row col"><h2>New trial</h2></div>
-                <div className="row col">
-                    <div className="input-group mb-3">
-                      <div className="input-group-prepend">
-                        <span className="input-group-text" id="basic-addon1">Name</span>
-                      </div>
-                      <input type="text" className="form-control" placeholder="Name" aria-label="Name"
+                <h2>New trial</h2>
+                    <div className="">
+                        <span className="" id="basic-addon1">Name</span>
+                      <input type="text" placeholder="Name" aria-label="Name"
                              aria-describedby="basic-addon1" onChange={(event) => this.onTrialNameChanged(event.target.value)}/>
-                    </div>
                     {this.props.scales.map((v) => this.renderScaleCheckbox(v))}
                 </div>
                 <Button onClick={this.startTrial} disabled={this.props.trialName === "" || this.props.trialScales.length === 0}>Begin</Button>
@@ -62,10 +58,10 @@ class NewTrial extends Component<Props> {
     }
 
     private renderScaleCheckbox(scale: Scale) {
-        return <div className="form-check" key={scale.name}>
-            <input className="form-check-input" type="checkbox" id={scale.name}
+        return <div key={scale.name}>
+            <input type="checkbox" id={scale.name}
                    onChange={this.handleScaleSelectionChange}/>
-            <label className="form-check-label" htmlFor={scale.name}>{scale.name}</label>
+            <label htmlFor={scale.name}>{scale.name}</label>
         </div>;
     }
 

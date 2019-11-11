@@ -34,7 +34,7 @@ class Observation extends Component<Props> {
         return <div className={"container trial-container " + maybeSelected}>
             <div className="row col justify-content-center"><h1 className="trial">{scale.description}</h1></div>
             {scale.intensities.map((intensity, index) =>
-                <div key={index} className="row align-items-center">
+                <div key={index}>
                     <div className="col"/>
                     <Button intensity={intensity.number}
                             selected={this.props.selectedIntensity != null ? this.props.selectedIntensity === index : false}/>
