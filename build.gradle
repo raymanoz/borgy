@@ -23,9 +23,16 @@ dependencies {
     testImplementation 'com.natpryce:hamkrest:1.7.0.0'
 }
 
-idea.module {
-    outputDir file("${buildDir}/classes/kotlin/main")
-    testOutputDir file("${buildDir}/classes/kotlin/test")
+idea {
+    project {
+        jdkName "11"
+        languageLevel "11"
+        vcs = 'Git'
+    }
+    module {
+        outputDir file("${buildDir}/classes/kotlin/main")
+        testOutputDir file("${buildDir}/classes/kotlin/test")
+    }
 }
 
 compileKotlin {
@@ -47,7 +54,7 @@ test {
 def webAppFiles = fileTree(dir: project.file('src/main/react/build')).include('**/*')
 
 task pull_submodules(type: Exec) {
-   commandLine(['git', 'submodule', 'update', '--init', '--recursive'])
+    commandLine(['git', 'submodule', 'update', '--init', '--recursive'])
 }
 
 task init_borgy(type: Exec, dependsOn: ['pull_submodules']) {
