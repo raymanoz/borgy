@@ -23,6 +23,11 @@ dependencies {
     testImplementation 'com.natpryce:hamkrest:1.7.0.0'
 }
 
+idea.module {
+    outputDir file("${buildDir}/classes/kotlin/main")
+    testOutputDir file("${buildDir}/classes/kotlin/test")
+}
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
