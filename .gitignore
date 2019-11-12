@@ -27,4 +27,5 @@ build/
 trials/
 
 .gradle/
-.idea/
+**/.idea/*
+!.idea/runConfigurations
