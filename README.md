@@ -15,26 +15,26 @@ Requirements
 Setup
 =====
 
-    ```./gradlew borgy_init```
+    ./gradlew borgy_init
     
 Run (in dev mode)
 ===
 
-start backend
+start server from command line
 
-    ```./gradlew start_back```
+    ./gradlew start_back
     
-start frontend
+or start server in IntelliJ, use the target "Start kotlin server"    
 
-    ```./gradlew start_front```
+    
+start frontend from command line
+
+    ./gradlew start_front
+    
+or start the react dev server in IntelliJ, use the target "Start react dev server"
+ 
     
 notes
 =====
 [This](https://github.com/toddlucas/react-tsx-starter) seems like a good react typescript example
-
-
-Application users
-=================
-researcher - this person will be in charge of starting a trial, ending a trial and perhaps monitoring a trial.
-subject - This is the person for who the trial is being run. They will press the buttons during the trial to show how tired (etc) that they are.
 
