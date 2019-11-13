@@ -25,7 +25,7 @@ dependencies {
 
 idea {
     project {
-        jdkName "11"
+        jdkName "13"
         languageLevel "11"
         vcs = 'Git'
     }
