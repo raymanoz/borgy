@@ -1,3 +1,7 @@
+**/.idea/*
+!.idea/runConfigurations
+
+
 # Compiled class file
 *.class
 
@@ -23,7 +27,5 @@ hs_err_pid*
 
 .gradle/
 build/
-.idea/
-!.idea/runConfigurations
 
 trials/
