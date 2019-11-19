@@ -83,11 +83,10 @@ task start_front(type: Exec) {
     commandLine(['yarn', 'start'])
 }
 
-/*
 task start_jar(type: JavaExec, dependsOn: jar) {
-    classpath = "build/libs/borgy.jar"
+    classpath = sourceSets.main.runtimeClasspath
+    main = "com.raymanoz.borgy.MainKt"
 }
-*/
 
 jar {
     manifest {
