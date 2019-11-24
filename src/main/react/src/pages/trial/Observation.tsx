@@ -33,14 +33,10 @@ class Observation extends Component<Props> {
         return <div className={"container trial-container " + maybeSelected}>
             <h1 className="trial">{scale.description}</h1>
             {scale.intensities.map((intensity, index) =>
-                <div key={index}>
-                    <div className="col"/>
+                <div key={index} className="flex-group flex-start border-bottom padding-vertical-1">
                     <Button intensity={intensity.number}
                             selected={this.props.selectedIntensity != null ? this.props.selectedIntensity === index : false}/>
-                    <div className="col">
-                        <div className={"borg-button-label"}>{intensity.label}</div>
-                    </div>
-                    <div className="col"/>
+                    <div className={"borg-button-label"}>{intensity.label}</div>
                 </div>)}
         </div>;
     }

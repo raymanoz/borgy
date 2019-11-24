@@ -29,18 +29,16 @@ class Trial extends Component<TrialProps> {
     }
 
     public render = () =>
-        this.gamepad(<div className={"container"}>
-            <div className={"row"}>
+        this.gamepad(<main><div className="flex-group">
                 {this.props.trial.observations.map((observation, idx) => {
                     const selected = this.props.trial.selectedObservation === idx;
-                    return <div key={idx} className={"col"}>
+                    return <div key={idx}>
                         <Observation scale={observation.scale} selected={selected}
                                      selectedIntensity={observation.selectedIntensity}
                                      trialName={this.trialName()}/>
                     </div>;
                 })}
-            </div>
-        </div>)
+        </div></main>)
 
     private trialName = () => this.props.match.params.name;
 
