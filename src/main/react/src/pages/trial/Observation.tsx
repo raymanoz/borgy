@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import Button from "../../components/Button";
 import {logEvent} from "../../store/trial/operations";
 import {Intensity, Scale} from "../Scale";
-import "../Trial.css";
 
 interface Props {
     logEvent: (trialName: string, scale: Scale, intensity: Intensity) => void;
@@ -32,7 +31,7 @@ class Observation extends Component<Props> {
     private buttons(scale: Scale) {
         const maybeSelected = this.props.selected ? "selected" : "";
         return <div className={"container trial-container " + maybeSelected}>
-            <div className="row col justify-content-center"><h1 className="trial">{scale.description}</h1></div>
+            <h1 className="trial">{scale.description}</h1>
             {scale.intensities.map((intensity, index) =>
                 <div key={index}>
                     <div className="col"/>

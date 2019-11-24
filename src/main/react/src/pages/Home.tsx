@@ -33,11 +33,10 @@ class Home extends Component<Props, State> {
     }
 
     public render() {
-        return <div className="container">
-            <div className="row col justify-content-center"><h1>Borgy</h1></div>
+        return <main>
             <NewTrial history={this.props.history}/>
             <ActiveTrials/>
-        </div>;
+        </main>;
     }
 
     private refreshTrials() {

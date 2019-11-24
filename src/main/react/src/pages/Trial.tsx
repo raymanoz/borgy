@@ -5,7 +5,6 @@ import {RouteComponentProps} from "react-router";
 import {AppState} from "../store";
 import {fetchTrial, selectNextObservation, selectPreviousObservation} from "../store/trial/operations";
 import {Trial as TrialData} from "../store/trial/types";
-import "./Trial.css";
 import Observation from "./trial/Observation";
 
 interface TrialProps extends RouteComponentProps<{ name: string }> {

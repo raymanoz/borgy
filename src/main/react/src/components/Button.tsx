@@ -8,9 +8,7 @@ export interface Props {
 
 const Button = ({ intensity, selected }: Props) => {
     return (
-        <div className="col">
-            <div className={`borg-button btn btn-primary ${selected ? "borg-button-selected" : ""}`}>{intensity}</div>
-        </div>
+        <button className={`primary ${selected ? "borg-button-selected" : ""}`}>{intensity}</button>
     );
 };
 

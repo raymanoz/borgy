@@ -26,7 +26,7 @@ class ActiveTrials extends Component<Props> {
     public render() {
         return (
             <span id="activeTrials">
-                <div className="row col"><h2>Active Trials</h2></div>
+                <h2>Active trials</h2>
                 {this.props.trials.map(this.renderActiveTrial)}
             </span>
         );
@@ -34,8 +34,8 @@ class ActiveTrials extends Component<Props> {
 
     private renderActiveTrial(trial: string, idx: number) {
         return <div key={idx} className="row active-trial">
-            <div className="col-4"><NavLink to={"/trial/" + trial}>{trial}</NavLink></div>
-            <button className="btn btn-danger" onClick={(_) => this.completeTrial(trial)}>Complete</button>
+            <NavLink to={"/trial/" + trial}>{trial}</NavLink>
+            <button className="primary" onClick={(_) => this.completeTrial(trial)}>Complete</button>
         </div>;
     }
 
