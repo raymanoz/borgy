@@ -33,7 +33,7 @@ class ActiveTrials extends Component<Props> {
     }
 
     private renderActiveTrial(trial: string, idx: number) {
-        return <div key={idx} className="row active-trial">
+        return <div key={idx} className="flex-group">
             <NavLink to={"/trial/" + trial}>{trial}</NavLink>
             <button className="primary" onClick={(_) => this.completeTrial(trial)}>Complete</button>
         </div>;
