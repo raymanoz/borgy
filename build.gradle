@@ -84,7 +84,7 @@ task start_front(type: Exec) {
 }
 
 task start_jar(type: JavaExec, dependsOn: jar) {
-    classpath = sourceSets.main.runtimeClasspath
+    classpath = files('build/libs/borgy.jar')
     main = "com.raymanoz.borgy.MainKt"
 }
 
