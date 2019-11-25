@@ -3,10 +3,7 @@ const webpack = require('webpack');
 const path = require('path');
 
 module.exports = (env, argv) => {
-    const app_server = argv.mode === "development" ? "'http://localhost:9000'" : "''";
-
-    console.log("app_server", app_server);
-
+    const app_server = argv.mode === "production" ? "''" : "'http://localhost:9000'";
     return {
         resolve: {
             extensions: ['.tsx', '.ts', '.js'],
