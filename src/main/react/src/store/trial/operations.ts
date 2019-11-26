@@ -23,6 +23,18 @@ export const selectNextObservation = (trialName: string): ThunkAction<void, AppS
             .then((result) => result.json())
             .then((json) => dispatch(receivedTrialResponse(json)));
 
+export const selectPreviousIntensity = (trialName: string): ThunkAction<void, AppState, null, Action<string>> =>
+    async (dispatch) =>
+        fetch(server.selectPreviousIntensity(trialName), {method: "POST", credentials: "same-origin"})
+            .then((result) => result.json())
+            .then((json) => dispatch(receivedTrialResponse(json)));
+
+export const selectNextIntensity = (trialName: string): ThunkAction<void, AppState, null, Action<string>> =>
+    async (dispatch) =>
+        fetch(server.selectNextIntensity(trialName), {method: "POST", credentials: "same-origin"})
+            .then((result) => result.json())
+            .then((json) => dispatch(receivedTrialResponse(json)));
+
 export const logEvent = (trialName: string, scale: Scale, intensity: Intensity): ThunkAction<void, AppState, null, Action<string>> =>
     async (dispatch) =>
         fetch(server.trial(trialName) + "/event",

@@ -26,9 +26,8 @@ data class Trial(val name: String, val observations: List<Observation>, val sele
 }
 
 data class Observation(val scaleName: String, val events: List<Event>)
-data class Event(val time: Instant, val intensity: String)
+data class Event(val time: Instant, val intensity: Double)
 
-data class UiEvent(val scale: String, val intensity: String)
 data class UiTrial(val name: String, val observations: List<UiObservation>, val selectedObservation: Int?) {
     companion object {
         fun from(trial: Trial, scales: List<Scale>): UiTrial =
@@ -46,11 +45,10 @@ data class UiObservation(val scale: Scale, val selectedIntensity: Int?) {
                     null
                 } else {
                     val lastEvent = observation.events.last()
-                    scale.intensities.indexOfFirst { it.number == lastEvent.intensity.toDouble() }
+                    scale.intensities.indexOfFirst { it.number == lastEvent.intensity }
                 }
                 UiObservation(scale, selectedIntensity)
             } ?: throw RuntimeException("Failed to find scale")
         }
-
     }
 }

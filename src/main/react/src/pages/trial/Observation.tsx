@@ -2,12 +2,13 @@ import React, {Component} from "react";
 import Gamepad, {Button as GPButton} from "react-gamepad";
 import {connect} from "react-redux";
 import Button from "../../components/Button";
-import {logEvent} from "../../store/trial/operations";
-import {Intensity, Scale} from "../Scale";
+import {selectNextIntensity, selectPreviousIntensity} from "../../store/trial/operations";
+import {Scale} from "../Scale";
 import "../Trial.css";
 
 interface Props {
-    logEvent: (trialName: string, scale: Scale, intensity: Intensity) => void;
+    selectPreviousIntensity: (name: string) => void;
+    selectNextIntensity: (name: string) => void;
 
     scale: Scale;
     trialName: string;
@@ -25,10 +26,6 @@ class Observation extends Component<Props> {
         return this.gamepad(this.buttons(this.props.scale));
     }
 
-    private logEvent(intensity: Intensity) {
-        this.props.logEvent(this.props.trialName, this.props.scale, intensity);
-    }
-
     private buttons(scale: Scale) {
         const maybeSelected = this.props.selected ? "selected" : "";
         return <div className={"container observation " + maybeSelected}>
@@ -43,13 +40,10 @@ class Observation extends Component<Props> {
     }
 
     private handleButtonDown(buttonName: GPButton) {
-        const selectedIntensity = this.props.selectedIntensity == null ? 0 :
-            buttonName === "A" ? Math.max(0, this.props.selectedIntensity - 1) :
-                buttonName === "B" ? Math.min(this.props.scale.intensities.length - 1, (this.props.selectedIntensity + 1)) :
-                    this.props.selectedIntensity;
-
-        if (selectedIntensity != null && this.props.selectedIntensity !== selectedIntensity && (buttonName === "A" || buttonName === "B")) {
-            this.logEvent(this.props.scale.intensities[selectedIntensity]);
+        if (buttonName === "A") {
+            this.props.selectPreviousIntensity(this.props.trialName);
+        } else if (buttonName === "B") {
+            this.props.selectNextIntensity(this.props.trialName);
         }
     }
 
@@ -61,5 +55,5 @@ class Observation extends Component<Props> {
 
 export default connect(
     () => ({}),
-    { logEvent },
+    { selectPreviousIntensity, selectNextIntensity },
 )(Observation);
