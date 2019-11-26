@@ -14,6 +14,6 @@
 }
 
 
-.borg-button-selected {
+.borg-button.selected {
     background-color: yellowgreen;
 }

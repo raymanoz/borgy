@@ -6,10 +6,7 @@ export interface Props {
     selected: boolean;
 }
 
-const Button = ({ intensity, selected }: Props) => {
-    return (
-        <button className={`primary ${selected ? "borg-button-selected" : ""}`}>{intensity}</button>
-    );
-};
+const Button = ({ intensity, selected }: Props) =>
+    <button className={`borg-button primary ${selected ? "selected" : ""}`}>{intensity}</button>;
 
 export default Button;
