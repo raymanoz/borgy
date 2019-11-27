@@ -3,6 +3,7 @@ export interface Server {
     trials: string;
     scale(name: string): string;
     trial(name: string): string;
+    trialCSV(name: string): string;
     selectPreviousObservation(name: string): string;
     selectNextObservation(name: string): string;
     selectPreviousIntensity(name: string): string;
@@ -17,6 +18,7 @@ export let server: Server = {
     scale(name: string): string {return `${this.scales}/${name}`; },
     trials: `${reactappserver}/api/trials`,
     trial(name: string): string {return `${this.trials}/${name}`; },
+    trialCSV(name: string): string {return `${this.trials}/${name}`; },
     selectPreviousObservation(name: string): string {return `${this.trial(name)}/selectPreviousObservation`; },
     selectNextObservation(name: string): string {return `${this.trial(name)}/selectNextObservation`; },
     selectPreviousIntensity(name: string): string {return `${this.trial(name)}/selectPreviousIntensity`; },

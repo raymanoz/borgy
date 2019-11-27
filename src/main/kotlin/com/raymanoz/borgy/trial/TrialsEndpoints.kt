@@ -57,8 +57,21 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
 
     private fun trial(): HttpHandler = { req ->
         trialFromPathParam(req) { trial ->
-            Response(Status.OK).with(UiTrial.lens of UiTrial.from(trial, scales))
+            if (req.header("Content-Type") ?: "" == "text/csv") {
+                Response(Status.OK).body(toCSV(trial))
+            } else {
+                Response(Status.OK).with(UiTrial.lens of UiTrial.from(trial, scales))
+            }
         }
+    }
+
+    private fun toCSV(trial: Trial): String {
+        val results = trial.observations.flatMap { observation ->
+            observation.events.map { event ->
+                Triple(event.time,observation.scaleName,event.intensity)
+            }
+        }.sortedBy { it.first }.map{"${it.first},${it.second},${it.third}"}
+        return "scale,time,intensity\n" + results.joinToString("\n")
     }
 
     private fun selectPreviousObservation(): HttpHandler = { req ->
