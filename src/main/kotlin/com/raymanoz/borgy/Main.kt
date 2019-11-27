@@ -10,7 +10,7 @@ import org.http4k.server.asServer
 
 fun main() {
     val config = load(Environment.ENV)
-    val trialsRepository = FileTrialsRepository(config.activeTrials, config.completeTrials)
+    val trialsRepository = FileTrialsRepository(config.trialsDirectory, config.completeTrialsDirectory)
     val scalesRepository = FileScalesRepository(config.scalesFile)
     val scales = scalesRepository.scales()
     App(config, TrialsEndpoints(trialsRepository, scales), ScalesEndpoints(scalesRepository)).asServer(SunHttp(config.port)).start()

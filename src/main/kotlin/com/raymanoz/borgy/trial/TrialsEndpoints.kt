@@ -19,7 +19,6 @@ import org.http4k.routing.RoutingHttpHandler
 import org.http4k.routing.bind
 import org.http4k.routing.routes
 import java.time.Instant
-import kotlin.math.max
 
 class TrialsEndpoints(private val trials: TrialsRepository, private val scales: List<Scale>) : RoutingHttpHandler {
 
@@ -30,9 +29,10 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
                             "/{name}/selectNextObservation" bind Method.POST to selectNextObservation(),
                             "/{name}/selectPreviousIntensity" bind Method.POST to selectPreviousIntensity(),
                             "/{name}/selectNextIntensity" bind Method.POST to selectNextIntensity(),
+                            "/{name}/complete" bind Method.POST to completeTrial(),
                             "/{name}" bind routes(
                                     Method.GET to trial(),
-                                    Method.DELETE to completeTrial()
+                                    Method.DELETE to archiveTrial()
                             ),
                             routes(
                                     Method.GET to trials(),
@@ -42,7 +42,7 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
             )
     )
 
-    private fun completeTrial(): HttpHandler = { req ->
+    private fun archiveTrial(): HttpHandler = { req ->
         req.pathResult("name").map { name ->
             trials.complete(name)
             Response(Status.OK)
@@ -50,7 +50,9 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
     }
 
     private fun trials(): HttpHandler = {
-        Response(Status.OK).with(Body.auto<List<String>>().toLens() of trials.names())
+        Response(Status.OK).with(Body.auto<List<TrialSummary>>().toLens() of
+                trials.get().partition { it.state == State.ACTIVE }.toList().flatten().map { it.summary() }
+        )
     }
 
     private fun trial(): HttpHandler = { req ->
@@ -96,6 +98,13 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
                     observation
             }
             val newTrial = trials.put(trial.copy(observations = newObservations))
+            Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
+        }
+    }
+
+    private fun completeTrial(): HttpHandler = { req ->
+        trialFromPathParam(req) { trial ->
+            val newTrial = trials.put(trial.copy(state = State.COMPLETE))
             Response(Status.OK).with(UiTrial.lens of UiTrial.from(newTrial, scales))
         }
     }

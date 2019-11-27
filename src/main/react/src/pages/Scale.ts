@@ -9,5 +9,10 @@ export interface Scale {
     intensities: Intensity[];
 }
 
+export interface TrialSummary {
+    name: string;
+    state: string;
+}
+
 export type Scales = Scale[];
-export type Trials = string[];
+export type Trials = TrialSummary[];

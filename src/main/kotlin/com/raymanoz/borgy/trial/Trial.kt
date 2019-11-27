@@ -11,7 +11,11 @@ import kotlin.math.max
 
 data class NewTrial(val name: String, val scales: List<String>)
 
-data class Trial(val name: String, val observations: List<Observation>, val selectedObservation: Int = 0) {
+enum class State {
+    ACTIVE, COMPLETE
+}
+
+data class Trial(val name: String, val observations: List<Observation>, val selectedObservation: Int = 0, val state: State = State.ACTIVE) {
     companion object {
         val lens: BiDiBodyLens<Trial> = Body.auto<Trial>().toLens()
     }
@@ -23,17 +27,25 @@ data class Trial(val name: String, val observations: List<Observation>, val sele
     fun selectPrevious(): Trial = copy(
             selectedObservation = max(0, selectedObservation - 1)
     )
+
+    fun summary(): TrialSummary = TrialSummary(name, state)
+}
+
+data class TrialSummary(val name: String, val state: State) {
+    companion object {
+        val lens: BiDiBodyLens<TrialSummary> = Body.auto<TrialSummary>().toLens()
+    }
 }
 
 data class Observation(val scaleName: String, val events: List<Event>)
 data class Event(val time: Instant, val intensity: Double)
 
-data class UiTrial(val name: String, val observations: List<UiObservation>, val selectedObservation: Int?) {
+data class UiTrial(val name: String, val observations: List<UiObservation>, val selectedObservation: Int?, val state: State) {
     companion object {
         fun from(trial: Trial, scales: List<Scale>): UiTrial =
                 UiTrial(trial.name, trial.observations.map { observation ->
                     UiObservation.from(observation, scales)
-                }, trial.selectedObservation)
+                }, trial.selectedObservation, trial.state)
         val lens: BiDiBodyLens<UiTrial> = Body.auto<UiTrial>().toLens()
     }
 }

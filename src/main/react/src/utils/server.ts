@@ -7,6 +7,7 @@ export interface Server {
     selectNextObservation(name: string): string;
     selectPreviousIntensity(name: string): string;
     selectNextIntensity(name: string): string;
+    completeTrial(name: string): string;
 }
 
 const reactappserver = process.env.REACT_APP_SERVER;
@@ -20,4 +21,5 @@ export let server: Server = {
     selectNextObservation(name: string): string {return `${this.trial(name)}/selectNextObservation`; },
     selectPreviousIntensity(name: string): string {return `${this.trial(name)}/selectPreviousIntensity`; },
     selectNextIntensity(name: string): string {return `${this.trial(name)}/selectNextIntensity`; },
+    completeTrial(name: string): string {return `${this.trial(name)}/complete`; },
 };

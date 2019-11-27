@@ -4,12 +4,13 @@ import org.http4k.format.Jackson
 import org.http4k.format.Jackson.asA
 import java.io.File
 import java.nio.file.Files
-import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : TrialsRepository {
-    override fun names(): List<String> = loadTrials().map { it.name }
+class FileTrialsRepository(val trialsDirectory: File, val archivedTrialsDirectory: File) : TrialsRepository {
+    override fun get(): List<Trial> = (activeTrialsDir()
+            .listFiles { _, name -> name.endsWith("json") } ?: arrayOf())
+            .map { it.read<Trial>() }
 
     override fun newTrial(name: String, scales: List<String>): Trial {
         val timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"))
@@ -42,17 +43,13 @@ class FileTrialsRepository(val activeTrials: File, val completeTrials: File) : T
                 trial
             }
 
-    private fun trialFile(name: String): File = File(activeTrials(), "$name.json")
+    private fun trialFile(name: String): File = File(activeTrialsDir(), "$name.json")
 
-    private fun loadTrials(): List<Trial> = (activeTrials()
-            .listFiles { _, name -> name.endsWith("json") } ?: arrayOf<File>())
-            .map { it.read<Trial>() }
-
-    private fun activeTrials() = this.activeTrials.apply { mkdirs() }
+    private fun activeTrialsDir() = this.trialsDirectory.apply { mkdirs() }
 
     private fun completeFile(name: String): File = File(completeTrials(), "$name.json")
 
-    private fun completeTrials() = this.completeTrials.apply { mkdirs() }
+    private fun completeTrials() = this.archivedTrialsDirectory.apply { mkdirs() }
 
     private fun File.load(): File? = if (exists()) this else null
 

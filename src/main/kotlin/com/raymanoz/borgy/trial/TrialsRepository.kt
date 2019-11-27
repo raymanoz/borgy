@@ -1,7 +1,7 @@
 package com.raymanoz.borgy.trial
 
 interface TrialsRepository {
-    fun names(): List<String>
+    fun get(): List<Trial>
     fun newTrial(name: String, scales: List<String>): Trial
     fun get(name: String): Trial?
     fun put(trial: Trial): Trial

@@ -6,8 +6,8 @@ import {AppState} from "../store";
 import {fetchScales} from "../store/scales/operations";
 import {server} from "../utils/server";
 import "./Home.css";
-import ActiveTrials from "./home/ActiveTrials";
 import NewTrial from "./home/NewTrial";
+import TrialsComponent from "./home/Trials";
 import {Trials} from "./Scale";
 
 interface Props {
@@ -35,7 +35,7 @@ class Home extends Component<Props, State> {
     public render() {
         return <main>
             <NewTrial history={this.props.history}/>
-            <ActiveTrials/>
+            <TrialsComponent/>
         </main>;
     }
 
