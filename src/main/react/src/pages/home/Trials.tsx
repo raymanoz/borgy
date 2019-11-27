@@ -39,7 +39,7 @@ class TrialsComponent extends Component<Props> {
                 {summary.state === "ACTIVE" ?
                     <button className="primary" onClick={(_) => this.completeTrial(summary.name)}>Complete</button> :
                     <button className="primary" onClick={(_) => this.archiveTrial(summary.name)}>Archive</button>}
-                <button className="primary" onClick={(_) => this.exportTrial(summary.name)}>Export</button>
+                {/*<button className="primary" onClick={(_) => this.exportTrial(summary.name)}>Export</button>*/}
             </div>
         </div>;
     }
@@ -53,11 +53,13 @@ class TrialsComponent extends Component<Props> {
         fetch(server.completeTrial(trialName), {method: "POST", credentials: "same-origin"})
             .then(() => this.props.refreshTrials());
     }
+/*
 
     private exportTrial(trialName: string) {
         fetch(server.completeTrial(trialName), {method: "POST", credentials: "same-origin"})
             .then(() => this.props.refreshTrials());
     }
+*/
 
 }
 
