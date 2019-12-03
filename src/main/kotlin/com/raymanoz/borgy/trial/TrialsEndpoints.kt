@@ -71,7 +71,7 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
                 Triple(event.time,observation.scaleName,event.intensity)
             }
         }.sortedBy { it.first }.map{"${it.first},${it.second},${it.third}"}
-        return "scale,time,intensity\n" + results.joinToString("\n")
+        return "time,scale,intensity\n" + results.joinToString("\n")
     }
 
     private fun selectPreviousObservation(): HttpHandler = { req ->
