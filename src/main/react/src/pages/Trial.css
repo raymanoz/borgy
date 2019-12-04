@@ -4,6 +4,15 @@
 li {
     list-style: none;
 }
-h1.trial {
+
+h1 {
     font-size: 40px;
+}
+
+header {
+    display: none;
+}
+
+main {
+    padding: 1rem 0;
 }

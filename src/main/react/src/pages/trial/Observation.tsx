@@ -4,7 +4,6 @@ import {connect} from "react-redux";
 import Button from "../../components/Button";
 import {selectNextIntensity, selectPreviousIntensity} from "../../store/trial/operations";
 import {Scale} from "../Scale";
-import "../Trial.css";
 
 interface Props {
     selectPreviousIntensity: (name: string) => void;
@@ -29,7 +28,7 @@ class Observation extends Component<Props> {
     private buttons(scale: Scale) {
         const maybeSelected = this.props.selected ? "selected" : "";
         return <div className={"container observation " + maybeSelected}>
-            <h1 className="trial">{scale.description}</h1>
+            <h2>{scale.description}</h2>
             {scale.intensities.map((intensity, index) =>
                 <div key={index} className="flex-group flex-start border-bottom padding-vertical-1">
                     <Button intensity={intensity.number}

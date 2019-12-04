@@ -5,7 +5,6 @@ import {NavLink} from "react-router-dom";
 import {AppState} from "../store";
 import {fetchScales} from "../store/scales/operations";
 import {server} from "../utils/server";
-import "./Home.css";
 import NewTrial from "./home/NewTrial";
 import TrialsComponent from "./home/Trials";
 import {Trials} from "./Scale";
@@ -33,7 +32,7 @@ class Home extends Component<Props, State> {
     }
 
     public render() {
-        return <main>
+        return <main className="wrapper">
             <NewTrial history={this.props.history}/>
             <TrialsComponent/>
         </main>;
