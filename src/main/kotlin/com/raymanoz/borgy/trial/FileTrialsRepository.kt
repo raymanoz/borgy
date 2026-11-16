@@ -27,7 +27,7 @@ class FileTrialsRepository(val trialsDirectory: File, val archivedTrialsDirector
         return trial
     }
 
-    override fun get(name: String): Trial? =
+    override fun get(name: String): Trial =
             withTrialFile(name) { it.read() }
 
     override fun complete(name: String) {
