@@ -1,6 +1,6 @@
 package com.raymanoz.borgy.trial
 
-class InMemoryTrialsRepository() : TrialsRepository {
+class InMemoryTrialsRepository : TrialsRepository {
     override fun put(trial: Trial): Trial {
         TODO("not implemented")
     }

@@ -1,7 +1,7 @@
 package com.raymanoz.borgy
 
-import org.http4k.cloudnative.env.Environment
-import org.http4k.cloudnative.env.EnvironmentKey
+import org.http4k.config.Environment
+import org.http4k.config.EnvironmentKey
 import org.http4k.lens.int
 import org.http4k.lens.string
 import org.http4k.routing.ResourceLoader

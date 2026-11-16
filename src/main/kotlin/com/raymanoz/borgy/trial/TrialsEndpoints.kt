@@ -57,7 +57,7 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
 
     private fun trial(): HttpHandler = { req ->
         trialFromPathParam(req) { trial ->
-            if (req.header("Content-Type") ?: "" == "text/csv") {
+            if ((req.header("Content-Type") ?: "") == "text/csv") {
                 Response(Status.OK).body(toCSV(trial))
             } else {
                 Response(Status.OK).with(UiTrial.lens of UiTrial.from(trial, scales))
@@ -130,7 +130,7 @@ class TrialsEndpoints(private val trials: TrialsRepository, private val scales: 
 
     override fun invoke(request: Request): Response = handler(request)
 
-    override fun match(request: Request): HttpHandler? = handler.match(request)
+    override fun match(request: Request) = handler.match(request)
 
     override fun withBasePath(new: String): RoutingHttpHandler = handler.withBasePath(new)
 

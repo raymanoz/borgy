@@ -42,7 +42,7 @@ class ScalesTest {
     fun `can lookup a single scale`() {
         assertThat(
                 client(Request(Method.GET, "/api/scales/name1")),
-                hasBody("""{"name":"name1","description":"desc1","intensities":[{"number":1,"label":"intensity1"}]}""")
+                Jackson.hasBody("""{"name":"name1","description":"desc1","intensities":[{"number":1,"label":"intensity1"}]}""")
         )
     }
 

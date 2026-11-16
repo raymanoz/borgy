@@ -4,7 +4,7 @@ import com.raymanoz.borgy.scale.FileScalesRepository
 import com.raymanoz.borgy.scale.ScalesEndpoints
 import com.raymanoz.borgy.trial.FileTrialsRepository
 import com.raymanoz.borgy.trial.TrialsEndpoints
-import org.http4k.cloudnative.env.Environment
+import org.http4k.config.Environment
 import org.http4k.server.SunHttp
 import org.http4k.server.asServer
 

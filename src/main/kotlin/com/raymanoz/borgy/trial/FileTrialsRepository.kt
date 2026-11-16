@@ -53,7 +53,7 @@ class FileTrialsRepository(val trialsDirectory: File, val archivedTrialsDirector
 
     private fun File.load(): File? = if (exists()) this else null
 
-    private inline fun <reified T : Any> File.write(data: T) = writeText(Jackson.asJsonString(data))
+    private inline fun <reified T : Any> File.write(data: T) = writeText(Jackson.asFormatString(data))
 
     private inline fun <reified T : Any> File.read(): T = readText().asA(T::class)
 

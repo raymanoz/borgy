@@ -3,7 +3,7 @@ package com.raymanoz
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import com.raymanoz.borgy.load
-import org.http4k.cloudnative.env.Environment
+import org.http4k.config.Environment
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
 
